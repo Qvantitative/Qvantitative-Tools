@@ -1,0 +1,54 @@
+.main-app {
+    text-align: center;
+    margin: 100px;
+}
+
+.main-app-one {
+    text-align: center;
+    margin: 20px;
+}
+
+.cta-button {
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    min-width: 500px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.cta-button-two {
+    padding: 30px;
+    border: none;
+    border-radius: 12px;
+    min-width: 250px;
+    line-height: 5;
+    color: rgb(255, 255, 255);
+    font-size: 36px;
+    cursor: pointer;
+}
+
+.connect-wallet-button {
+    background: rgb(32, 129, 226);
+}
+
+.verify-button {
+    background: orange;
+}
+
+.merch-button {
+    background: rgb(66, 212, 212);
+}
+
+.one-button {
+    background: rgb(216, 208, 208);
+}
+
+.two-button {
+    background: rgb(243, 0, 0);
+}
+
+.three-button {
+    background: rgb(233, 247, 43);
+}
