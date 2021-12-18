@@ -150,7 +150,7 @@ function Auth() {
       return (
         <div className='main-app'>
         <div>
-          <Stack spacing={4} direction='row' align='center'>
+          <Stack spacing={4} direction='row'>
             {merchButton()}
             {utilityButton()}
             {virtualButton()}
