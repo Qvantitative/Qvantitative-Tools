@@ -1,6 +1,6 @@
 import '../styles/App.css';
 import React from 'react';
-import Navbar from '../components/Navbar';
+//import Navbar from '../components/Navbar';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 //import Router from './Router';
 
@@ -14,7 +14,6 @@ function MyApp({ Component, pageProps }) {
   return (
   <ChakraProvider theme={theme}>
     <div>
-      <Navbar/>
       <Component {...pageProps} />
     </div>
   </ChakraProvider>
