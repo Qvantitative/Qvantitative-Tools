@@ -143,7 +143,7 @@ function Auth() {
         <button 
           onClick={verifyHandler} 
           className='cta-button-two verify-button'>
-            Access Pass
+            Enter
         </button>
       )
     } else {
