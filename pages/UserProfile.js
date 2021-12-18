@@ -104,7 +104,7 @@ function Auth() {
       <button 
         onClick={utilityHandler} 
         className='cta-button-two one-button'>
-          Rarity
+          NFT Rarity
       </button>
     )
   }
@@ -114,7 +114,7 @@ function Auth() {
       <button 
         onClick={virtualHandler} 
         className='cta-button-two two-button'>
-          Analytics
+          Q-Tools
       </button>
     )
   }
