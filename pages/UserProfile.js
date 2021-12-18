@@ -94,7 +94,7 @@ function Auth() {
       <button 
         onClick={merchHandler} 
         className='cta-button-two merch-button'>
-          Merch
+          Portfolio
       </button>
     )
   }
@@ -104,7 +104,7 @@ function Auth() {
       <button 
         onClick={utilityHandler} 
         className='cta-button-two one-button'>
-          Utility
+          Rarity
       </button>
     )
   }
@@ -114,7 +114,7 @@ function Auth() {
       <button 
         onClick={virtualHandler} 
         className='cta-button-two two-button'>
-          Virtual
+          Analytics
       </button>
     )
   }
@@ -124,7 +124,7 @@ function Auth() {
       <button 
         onClick={mysteryHandler} 
         className='cta-button-two three-button'>
-          ?
+          Merch
       </button>
     )
   }
