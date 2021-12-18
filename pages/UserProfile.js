@@ -134,7 +134,7 @@ function Auth() {
       return (
         <button 
           onClick={connectWalletHandler} 
-          className='cta-button connect-wallet-button'>
+          className='cta-button-two connect-wallet-button'>
           Welcome
         </button>
       )
@@ -142,7 +142,7 @@ function Auth() {
       return (
         <button 
           onClick={verifyHandler} 
-          className='cta-button verify-button'>
+          className='cta-button-two verify-button'>
             Access Pass
         </button>
       )
