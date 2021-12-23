@@ -3,10 +3,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "build": "npm run watch:css && react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
     "lint": "next lint",
-    "build:css": "tailwind build styles/globals.css -o dist/style.css"
+    "build:css": "tailwind build styles/globals.css -o components/style.css"
   },
   "dependencies": {
     "@chakra-ui/react": "^1.7.3",
