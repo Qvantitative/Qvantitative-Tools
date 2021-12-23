@@ -7,7 +7,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "next lint",
-    "build:css": "tailwind build styles/globals.css -o components/style.css"
+    "watch:css": "postcss build styles/globals.css -o components/style.css"
   },
   "dependencies": {
     "@chakra-ui/react": "^1.7.3",
