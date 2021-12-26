@@ -1,12 +1,18 @@
-import {React, useState} from "react";
 import './_app.js';
+import {React, useState} from "react";
 import { ethers } from "ethers";
-//import Link from 'next/link';
-import { Stack } from '@chakra-ui/react';
-import { Img } from '@chakra-ui/react';
 import contract from './contracts/contract.json';
 import contract2 from './contracts/contract2.json';
 import contract3 from './contracts/contract3.json';
+//import Link from 'next/link';
+import { 
+  Stack, 
+  Button, 
+  ButtonGroup,
+  Flex,
+  Spacer,
+  Box
+} from '@chakra-ui/react';
 
 const contractAddress = "0xbd9071b63f25dd199079ed80b3b384d78042956b";
 const contractAddress2 = "0xb2b42942133130e09d54d9712c3f7e1b54d088cb";
@@ -91,83 +97,85 @@ function Auth() {
 
   const merchButton = () => {
     return (
-      <button 
+      <Button 
         onClick={merchHandler} 
-        className='cta-button-two merch-button'>
+        colorScheme='teal' 
+        p='50' >
           Portfolio
-      </button>
+      </Button>
     )
   }
 
   const utilityButton = () => {
     return (
-      <button 
+      <Button 
         onClick={utilityHandler} 
-        className='cta-button-two one-button'>
+        colorScheme='green' 
+        p='50' >
           NFT Rarity
-      </button>
+      </Button>
     )
   }
 
   const virtualButton = () => {
     return (
-      <button 
+      <Button 
         onClick={virtualHandler} 
-        className='cta-button-two two-button'>
+        colorScheme='red' 
+        p='50' >
           Q-Tools
-      </button>
+      </Button>
     )
   }
 
   const mysteryButton = () => {
     return (
-      <button 
+      <Button 
         onClick={mysteryHandler} 
-        className='cta-button-two three-button'>
+        colorScheme='orange' 
+        p='50' >
           Merch
-      </button>
+      </Button>
     )
   }
 
   const btn = () => {
     if (isLoading === false && isLoadingSecond === true) {
       return (
-        <button 
-          onClick={connectWalletHandler} 
-          className='cta-button connect-wallet-button'>
-          Welcome
-        </button>
+        <div className='main-app'>
+          <Button 
+            onClick={connectWalletHandler} 
+            colorScheme='blue'>
+            Welcome
+          </Button>
+        </div>
       )
     } else if (isLoading === true && isLoadingSecond === true) { 
       return (
-        <button 
-          onClick={verifyHandler} 
-          className='cta-button verify-button'>
-            Enter
-        </button>
+        <div className='main-app'>
+          <Button 
+            onClick={verifyHandler} 
+            colorScheme='orange'>
+              Enter
+          </Button>
+        </div>
       )
     } else {
       return (
-        <div className='main-app'>
-        <div>
-          <Stack spacing={4} direction='row'>
+        <div className='main-app-one'>
+          <Stack spacing={5} direction='row'>
             {merchButton()}
             {utilityButton()}
             {virtualButton()}
             {mysteryButton()}
           </Stack>
         </div>
-      </div>
       )
     }
   }
 
   return (
-    <div className='main-app'>
-       <div>
-         {btn()}
-       </div>
-     </div>
+    btn()
   )
 }
 
