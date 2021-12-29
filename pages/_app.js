@@ -1,40 +1,16 @@
 import '../styles/App.css';
+import '../styles/globals.css';
 import React from 'react';
-import { 
-  ChakraProvider, 
-  Image, 
-  Stack, 
-  AspectRatio,
-  extendTheme } from '@chakra-ui/react';
-//import Navbar from '../components/Navbar';
-//import Router from './Router';
+import { ThemeProvider } from 'next-themes';
 
-const theme = extendTheme({
-  config: {
-    initialColorMode: 'dark'
-  }
-});
 
 function MyApp({ Component, pageProps }) {
   return (
-    <ChakraProvider theme={theme}>
-      <Image
-        src='https://ipfs.io/ipfs/QmfZsKy3u1yDAUAgaXqCcrkkP3up2iZorap7PUkZdGF2hu?filename=grillz-banner-yellow.jpg'
-      />
-      <Component 
-        {...pageProps} 
-      />
-      <Stack direction='row'>
-        <Image
-          boxSize='lg'
-          src="https://ipfs.io/ipfs/QmYpvX7zfbyqZokKZekGsDsekK1rYVFjMcXfBUtea8h85o?filename=grillz-grid-right.jpg"
-        />
-        <Image 
-          boxSize='lg'
-          src="https://ipfs.io/ipfs/QmP9K81VsuGvfjYsTRxW9FGZGnd6PuGdNh3VKC9TnzHJYt?filename=grillz-grid-left.jpg"
-        />
-      </Stack>
-    </ChakraProvider>
+      <ThemeProvider attribute="class">
+          <Component
+            {...pageProps}
+          />
+      </ThemeProvider>
   )
 };
 
