@@ -1,5 +1,5 @@
 import React from 'react';
-import UserProfile from './UserProfile';
+import UserProfile from './DataScience';
 import {useTheme} from 'next-themes'
 
 const Index = () => {
