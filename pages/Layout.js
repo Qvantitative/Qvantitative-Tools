@@ -10,8 +10,8 @@ import {
 import Papa from "papaparse";
 
 const navigation = [
-  { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-  { name: 'Analysis', href: '#', icon: UsersIcon, current: false },
+  { name: 'Azuki Distribution', href: '#', icon: HomeIcon, current: true },
+  { name: 'Top 25 Rewards', href: 'contractSearch', icon: UsersIcon, current: false },
 ]
 
 function classNames(...classes) {
@@ -178,7 +178,7 @@ export default function Example() {
           <main className="flex-1">
             <div className="py-6">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h1 className="text-2xl font-semibold">Qvantitative Tools</h1>
+                <h1 className="text-2xl font-semibold">Azuki Distribution</h1>
               </div>
               <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                 {/* Replace with your content */}
