@@ -1,5 +1,5 @@
 import React from 'react';
-import UserProfile from '../../query/DataScience';
+import Wallet from './wallet';
 import {useTheme} from 'next-themes'
 
 const Index = () => {
@@ -12,7 +12,7 @@ const Index = () => {
         className="p-3 h-12 w-12 order-2 md:order-3"
         onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
       />,
-    <UserProfile />
+    <Wallet />
   );
 };
 
