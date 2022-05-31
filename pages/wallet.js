@@ -3,7 +3,6 @@ import React, {Fragment, useEffect, useState} from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import {BellIcon, HomeIcon, MenuIcon, XIcon} from '@heroicons/react/outline'
 import {useMoralisWeb3Api} from "react-moralis";
-import Image from 'next/image'
 
 const Web3 = require("web3")
 const web3 = new Web3("https://mainnet.infura.io/v3/830febf016234fa7b49566eaf9a0e5d0")
@@ -142,7 +141,7 @@ export default function App() {
 
   useEffect(() => {
     connectWalletHandler()
-  })
+  }, [])
 
   useEffect(() => {
     fetchStats()
@@ -301,10 +300,9 @@ export default function App() {
                                   <div className="wallet" key={index}>
                                     <div className={filterData % 2 === 0 ? 'bg-white' : 'bg-gray-50 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6' }>
                                       <div className="whitespace-nowrap text-sm font-medium text-gray-900">
-                                        <Image
+                                        <img
                                             className="inline-block h-20 w-20"
                                             src={y}
-                                            alt="NFT Images"
                                         />
                                         <div><strong>NAME</strong></div>
                                         {metadata?.name}

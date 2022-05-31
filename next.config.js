@@ -3,6 +3,9 @@ module.exports = {
     webpack5: true, // by default, if you customize webpack config, they switch back to version 4.
       // Looks like backward compatibility approach.
   },
+  images: {
+    domains: ['https://ipfs.io/ipfs/', 'https://ipfs.io/ipfs/', 'https://ipfs.nftworlds.com', 'https://minion-silhouete.s3.us-east-1.amazonaws.com']
+  },
   webpack(config) {
     config.resolve.fallback = {
       ...config.resolve.fallback, // if you miss it, all the other options in fallback, specified
