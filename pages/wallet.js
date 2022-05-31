@@ -141,7 +141,7 @@ export default function App() {
 
   useEffect(() => {
     connectWalletHandler()
-  }, [])
+  })
 
   useEffect(() => {
     fetchStats()
