@@ -99,6 +99,12 @@ export default function App() {
         //  console.log(name)
         //}
 
+        // get ENS domain of an address
+        const options = { address: accounts[0] };
+        const resolve = await Web3Api.resolve.resolveAddress(options);
+        console.log(resolve.name);
+        setCurrentAccount1(resolve.name)
+
       } catch (err) {
         console.log(err);
       }
@@ -139,33 +145,6 @@ export default function App() {
       }
     }
   }
-
-  async function fetchAddress() {
-    const {ethereum} = window;
-
-    if (!ethereum) {
-      alert("Please install Metamask!");
-    }
-
-    if (ethereum) {
-
-      try {
-        const accounts = await ethereum.request({
-          method: "eth_requestAccounts",
-        });
-
-        // get ENS domain of an address
-        const options = { address: accounts[0] };
-        const resolve = await Web3Api.resolve.resolveAddress(options);
-        console.log(resolve.name);
-        setCurrentAccount1(resolve.name)
-
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
-  };
 
   const searchByName = (event) => {
     event.persist();
@@ -222,14 +201,6 @@ export default function App() {
      },5000)
      return()=>clearInterval(interval)
   }, [gases, prices])
-
-  useEffect(() => {
-    fetchAddress()
-    //const interval=setInterval(()=>{
-    //  connectWalletHandler()
-    // },5000)
-    // return()=>clearInterval(interval)
-  }, [])
 
   //console.log(wallets)
 
