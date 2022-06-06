@@ -3,6 +3,10 @@ import React, {Fragment, useEffect, useState} from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import {BellIcon, HomeIcon, MenuIcon, XIcon} from '@heroicons/react/outline'
 import {useMoralisWeb3Api} from "react-moralis";
+import ENS, { getEnsAddress } from '@ensdomains/ensjs'
+const contractAddress = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D";
+
+const i = 0;
 
 const Web3 = require("web3")
 const web3 = new Web3("https://mainnet.infura.io/v3/830febf016234fa7b49566eaf9a0e5d0")
@@ -26,7 +30,7 @@ export default function App() {
   const [gases, setGases] = useState(null);
   const [prices, setPrices] = useState(null);
   const [walls, setWalls] = useState(null);
-  const [filterData, setFilterData ] = useState(null);
+  const [filterData, setFilterData] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [currentAccount, setCurrentAccount] = useState(null);
@@ -44,9 +48,8 @@ export default function App() {
   //    }
   //  }
 
-
   async function connectWalletHandler() {
-    const { ethereum } = window;
+    const {ethereum} = window;
 
     if (!ethereum) {
       alert("Please install Metamask!");
@@ -64,32 +67,53 @@ export default function App() {
         setIsLoading((currentAccount) => !currentAccount);
 
         const baseURL1 = "https://api.looksrare.org/api/v1/collections/";
-        const options = {
-          address: accounts[0],
-          chain: "eth",
-        };
-        const data1 = await Web3Api.account.getNFTs(options);
-        //console.log(data1);
-        setWallets0(data1.total)
+        const baseURL2 = "https://api.opensea.io/api/v1/collections"
+        const baseURL3 = "https://api.opensea.io/api/v1/collection"
 
-        const responses = data1.result.map((result, i) =>
-                fetch(`${baseURL1}stats?address=${data1.result[i].token_address}`)
-                    .then((res) => res.json()),
-          );
-            Promise.all(responses)
-                .then((fetchedOrders) => {
-                  //const aData = data.ownedNfts.concat(fetchedOrders)
-                  //console.log(data.ownedNfts);
-                  //console.log(fetchedOrders);
-                  let merged = data1.result.map((item, i) => Object.assign({}, item, fetchedOrders[i]));
-                  //console.log(merged)
+        const fetchURL = `${baseURL2}?asset_owner=${accounts[0]}&offset=0&limit=300`;
+        fetch(fetchURL, {
+          method: 'GET',
+          redirect: 'follow',
+        })
+          .then(resp => resp.json())
+          .then(data => {
+            console.log(data)
+            setWallets0(data.length);
+            const responses = data.map((data) =>
+              fetch(`${baseURL3}/${data.slug}`)
+                .then((res) => res.json()),
+        );
+          Promise.all(responses)
+              .then(fetchedOrders => {
+                //setContracts(fetchedOrders.map(fetchedOrders => fetchedOrders.address))
+                let merged = data.map((item, i) => Object.assign({}, item, fetchedOrders[i]));
+                  console.log(merged)
                   merged.sort(function (x, y) {
-                    return y.data?.floorPrice - x.data?.floorPrice;
+                    return y.collection.stats.floor_price - x.collection.stats.floor_price;
                   })
+                console.log(merged);
+                setFilterData(merged);
+                setWallets(merged);
+              });
+          });
 
-                  setFilterData(merged);
-                  setWallets(merged);
-                });
+        //const data1 = await Web3Api.account.getNFTs({address: accounts[0], chain: "eth", limit: 10});
+        //console.log(data1);
+        //setWallets0(data1.total)
+
+        //while (data1.next){
+        //    const result = await data1.next()
+        //    console.log(result)
+        //}
+
+        //const responses = data1.result.map((result, i) =>
+        //    Web3Api.token.getNFTLowestPrice({address: data1.result[i].token_address, days: "364"}),
+        //);
+        //console.log(responses)
+        //Promise.all(responses)
+        //    .then((fetchedOrders) => {
+        //      console.log(fetchedOrders);
+        //    })
 
         //let name = ens.getName(accounts[0])
         //if(accounts[0] != ens.name(name).getAddress()) {
@@ -104,8 +128,7 @@ export default function App() {
     } else {
       console.log("Ethereum object does not exist");
     }
-
-  };
+  }
 
   async function fetchStats() {
     const {ethereum} = window;
@@ -141,7 +164,7 @@ export default function App() {
 
   useEffect(() => {
     connectWalletHandler()
-  }, [])
+  }, [24])
 
   useEffect(() => {
     fetchStats()
@@ -151,43 +174,9 @@ export default function App() {
      return()=>clearInterval(interval)
   }, [gases, prices])
 
-
-  const searchByName = (event) => {
-    event.persist();
-    // Get the search term
-    const searchItem = event.target.value.trim();
-    // If search term is empty fill with full students data
-    if(!searchItem.trim()) {
-      setFilterData(wallets);
-    }
-
-    // Search the name and if it found return the same array
-    const searchIn = (title) => {
-      if(title?.indexOf(searchItem) !== -1) {
-        return true;
-      }
-      return false;
-    };
-
-    if (Array.isArray(wallets)) {
-      const result2 = wallets.filter(item => item);
-      console.log('arr is an array');
-    } else {
-      console.log('arr is not an array');
-    }
-
-    // Filter the array
-    const filteredData = wallets.filter((item) => {
-      return searchIn(item.name);
-    });
-
-    // Set the state with filtered data
-    setFilterData(filteredData);
-  }
-
   const stats = [
       { name: 'Wallet Balance (eth)', stat: balances },
-      { name: 'Total NFTs', stat: wallets0 },
+      { name: 'Total Collections', stat: wallets0 },
       { name: 'Eth Price', stat: prices },
       { name: 'Gas (gwei)', stat: gases },
   ]
@@ -277,24 +266,15 @@ export default function App() {
                         <div className="my-2 sm:-mx-6 lg:-mx-8 overflow-x-auto">
                           <div className="py-2 align-middle h-96 min-w-full inline-block sm:px-6 lg:px-8 flex-row justify-between">
                             <div className="shadow sm:rounded-lg">
-
                               <div className="grid grid-cols-4 gap-4">
 
                                   {filterData && filterData.map((wallet, index) => {
-                                    const floor = wallet.data?.floorPrice/10**18;
+                                    const floor = wallet.collection.stats.floor_price;
                                     //console.log(floor)
-                                    const volume7d = wallet.data?.volume7d/10**18;
-                                    const metadata = JSON.parse(wallet.metadata)
-                                    //console.log(metadata)
+                                    const sales30d = wallet.collection.stats?.thirty_day_sales;
 
-                                    const w = metadata?.image
+                                    const y = wallet.collection.image_url
                                     //console.log(w)
-
-                                    //REPLACE IPFS URL
-                                    if(!w) return
-                                    const x = w.replace("ipfs://", "https://ipfs.io/ipfs/")
-                                    const y = x.replace("https://ipfs.io/ipfs/ipfs/", "https://ipfs.io/ipfs/")
-                                    //console.log(y)
 
                                   return(
                                   <div className="wallet" key={index}>
@@ -305,15 +285,15 @@ export default function App() {
                                             src={y}
                                         />
                                         <div><strong>NAME</strong></div>
-                                        {metadata?.name}
+                                        {wallet.collection.name}
                                       </div>
                                       <div className="whitespace-nowrap text-sm font-medium text-gray-900">
                                         <div><strong>PRICE FLOOR</strong></div>
                                         {floor}
                                       </div>
                                       <div className="whitespace-nowrap text-sm font-medium text-gray-900 place-items-end">
-                                        <div><strong>7d Vol</strong></div>
-                                        {volume7d}
+                                        <div><strong>30d Sales</strong></div>
+                                        {sales30d}
                                       </div>
                                     </div>
                                   </div>
