@@ -184,11 +184,11 @@ export default function App() {
 
   useEffect(() => {
     connectWalletHandler()
-    const interval=setInterval(()=>{
-      connectWalletHandler()
-     },5000)
-     return()=>clearInterval(interval)
-  }, [currentAccount])
+    //const interval=setInterval(()=>{
+    //  connectWalletHandler()
+    // },5000)
+    // return()=>clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     fetchStats()
@@ -308,11 +308,11 @@ export default function App() {
                                       </div>
                                       <div className="whitespace-nowrap text-sm font-medium text-gray-900">
                                         <div><strong>PRICE FLOOR</strong></div>
-                                        {floor}
+                                        {floor} eth
                                       </div>
                                       <div className="whitespace-nowrap text-sm font-medium text-gray-900 place-items-end">
                                         <div><strong>TOTAL VOLUME</strong></div>
-                                        {volume}
+                                        {volume} eth
                                       </div>
                                     </div>
                                   </div>
