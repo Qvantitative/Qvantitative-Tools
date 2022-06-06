@@ -3,8 +3,6 @@ import React, {Fragment, useEffect, useState} from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import {BellIcon, HomeIcon, MenuIcon, XIcon} from '@heroicons/react/outline'
 import {useMoralisWeb3Api} from "react-moralis";
-import ENS, { getEnsAddress } from '@ensdomains/ensjs'
-const contractAddress = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D";
 
 const i = 0;
 
@@ -31,9 +29,9 @@ export default function App() {
   const [prices, setPrices] = useState(null);
   const [walls, setWalls] = useState(null);
   const [filterData, setFilterData] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [currentAccount, setCurrentAccount] = useState(null);
+  const [currentAccount1, setCurrentAccount1] = useState(null);
   const [selectedValue, setSelectedValue] = useState('tous');
   const Web3Api = useMoralisWeb3Api();
 
@@ -142,6 +140,33 @@ export default function App() {
     }
   }
 
+  async function fetchAddress() {
+    const {ethereum} = window;
+
+    if (!ethereum) {
+      alert("Please install Metamask!");
+    }
+
+    if (ethereum) {
+
+      try {
+        const accounts = await ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
+        // get ENS domain of an address
+        const options = { address: accounts[0] };
+        const resolve = await Web3Api.resolve.resolveAddress(options);
+        console.log(resolve.name);
+        setCurrentAccount1(resolve.name)
+
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+  };
+
   const searchByName = (event) => {
     event.persist();
     // Get the search term
@@ -198,6 +223,14 @@ export default function App() {
      return()=>clearInterval(interval)
   }, [gases, prices])
 
+  useEffect(() => {
+    fetchAddress()
+    //const interval=setInterval(()=>{
+    //  connectWalletHandler()
+    // },5000)
+    // return()=>clearInterval(interval)
+  }, [])
+
   //console.log(wallets)
 
   return (
@@ -225,7 +258,7 @@ export default function App() {
                               className="bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
                           >
                             <span className="sr-only">View notifications</span>
-                              <h1 className="text-md font-bold text-white-900">{currentAccount}</h1>
+                              <h1 className="text-md font-bold text-white-900">{currentAccount1 || currentAccount}</h1>
                           </button>
 
 
@@ -248,7 +281,7 @@ export default function App() {
                   <Disclosure.Panel className="border-b border-gray-700 md:hidden absolute inset-y-0 right-0">
                     <div className="px-2 py-12 space-y-1 sm:px-3 absolute inset-y-0 right-0">
                         <Disclosure.Button>
-                          {currentAccount}
+                          {currentAccount1 || currentAccount}
                         </Disclosure.Button>
                     </div>
                   </Disclosure.Panel>
