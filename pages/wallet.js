@@ -66,7 +66,6 @@ export default function App() {
         setCurrentAccount(accounts[0]);
         setIsLoading((currentAccount) => !currentAccount);
 
-        const baseURL1 = "https://api.looksrare.org/api/v1/collections/";
         const baseURL2 = "https://api.opensea.io/api/v1/collections"
         const baseURL3 = "https://api.opensea.io/api/v1/collection"
 
@@ -77,7 +76,7 @@ export default function App() {
         })
           .then(resp => resp.json())
           .then(data => {
-            console.log(data)
+            //console.log(data)
             setWallets0(data.length);
             const responses = data.map((data) =>
               fetch(`${baseURL3}/${data.slug}`)
@@ -87,33 +86,14 @@ export default function App() {
               .then(fetchedOrders => {
                 //setContracts(fetchedOrders.map(fetchedOrders => fetchedOrders.address))
                 let merged = data.map((item, i) => Object.assign({}, item, fetchedOrders[i]));
-                  console.log(merged)
                   merged.sort(function (x, y) {
                     return y.collection.stats.floor_price - x.collection.stats.floor_price;
                   })
-                console.log(merged);
+                //console.log(fetchedOrders);
                 setFilterData(merged);
                 setWallets(merged);
               });
           });
-
-        //const data1 = await Web3Api.account.getNFTs({address: accounts[0], chain: "eth", limit: 10});
-        //console.log(data1);
-        //setWallets0(data1.total)
-
-        //while (data1.next){
-        //    const result = await data1.next()
-        //    console.log(result)
-        //}
-
-        //const responses = data1.result.map((result, i) =>
-        //    Web3Api.token.getNFTLowestPrice({address: data1.result[i].token_address, days: "364"}),
-        //);
-        //console.log(responses)
-        //Promise.all(responses)
-        //    .then((fetchedOrders) => {
-        //      console.log(fetchedOrders);
-        //    })
 
         //let name = ens.getName(accounts[0])
         //if(accounts[0] != ens.name(name).getAddress()) {
@@ -162,19 +142,7 @@ export default function App() {
     }
   }
 
-  useEffect(() => {
-    connectWalletHandler()
-  }, [24])
-
-  useEffect(() => {
-    fetchStats()
-    const interval=setInterval(()=>{
-      fetchStats()
-     },5000)
-     return()=>clearInterval(interval)
-  }, [gases, prices])
-
-    const searchByName = (event) => {
+  const searchByName = (event) => {
     event.persist();
     // Get the search term
     const searchItem = event.target.value.trim();
@@ -213,6 +181,22 @@ export default function App() {
       { name: 'Eth Price', stat: prices },
       { name: 'Gas (gwei)', stat: gases },
   ]
+
+  useEffect(() => {
+    connectWalletHandler()
+    const interval=setInterval(()=>{
+      connectWalletHandler()
+     },5000)
+     return()=>clearInterval(interval)
+  }, [currentAccount])
+
+  useEffect(() => {
+    fetchStats()
+    const interval=setInterval(()=>{
+      fetchStats()
+     },5000)
+     return()=>clearInterval(interval)
+  }, [gases, prices])
 
   //console.log(wallets)
 
@@ -304,7 +288,9 @@ export default function App() {
                                   {filterData && filterData.map((wallet, index) => {
                                     const floor = wallet.collection.stats.floor_price;
                                     //console.log(floor)
-                                    const sales30d = wallet.collection.stats?.thirty_day_sales;
+                                    const v = wallet.collection.stats.total_volume;
+                                    const volume = v.toFixed(2)
+
 
                                     const y = wallet.collection.image_url
                                     //console.log(w)
@@ -325,8 +311,8 @@ export default function App() {
                                         {floor}
                                       </div>
                                       <div className="whitespace-nowrap text-sm font-medium text-gray-900 place-items-end">
-                                        <div><strong>30d Sales</strong></div>
-                                        {sales30d}
+                                        <div><strong>TOTAL VOLUME</strong></div>
+                                        {volume}
                                       </div>
                                     </div>
                                   </div>
