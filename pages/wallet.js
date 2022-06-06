@@ -87,7 +87,7 @@ export default function App() {
                   merged.sort(function (x, y) {
                     return y.collection.stats.floor_price - x.collection.stats.floor_price;
                   })
-                //console.log(fetchedOrders);
+                console.log(fetchedOrders);
                 setFilterData(merged);
                 setWallets(merged);
               });
@@ -331,3 +331,11 @@ export default function App() {
       </>
   )
 }
+
+  export const getServerSideProps = async () => {
+    const data = await App();
+
+    return {
+      props: data,
+    };
+  }
