@@ -174,6 +174,39 @@ export default function App() {
      return()=>clearInterval(interval)
   }, [gases, prices])
 
+    const searchByName = (event) => {
+    event.persist();
+    // Get the search term
+    const searchItem = event.target.value.trim();
+    // If search term is empty fill with full students data
+    if(!searchItem.trim()) {
+      setFilterData(wallets);
+    }
+
+    // Search the name and if it found return the same array
+    const searchIn = (title) => {
+      if(title?.indexOf(searchItem) !== -1) {
+        return true;
+      }
+      return false;
+    };
+
+    if (Array.isArray(wallets)) {
+      const result2 = wallets.filter(item => item);
+      console.log('arr is an array');
+    } else {
+      console.log('arr is not an array');
+    }
+
+    // Filter the array
+    const filteredData = wallets.filter((item) => {
+      return searchIn(item.name);
+    });
+
+    // Set the state with filtered data
+    setFilterData(filteredData);
+  }
+
   const stats = [
       { name: 'Wallet Balance (eth)', stat: balances },
       { name: 'Total Collections', stat: wallets0 },
