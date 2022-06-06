@@ -93,12 +93,6 @@ export default function App() {
               });
           });
 
-        //let name = ens.getName(accounts[0])
-        //if(accounts[0] != ens.name(name).getAddress()) {
-        //  name = null;
-        //  console.log(name)
-        //}
-
         // get ENS domain of an address
         const options = { address: accounts[0] };
         const resolve = await Web3Api.resolve.resolveAddress(options);
@@ -181,7 +175,7 @@ export default function App() {
 
   const stats = [
       { name: 'Wallet Balance (eth)', stat: balances },
-      { name: 'Total Collections', stat: wallets0 },
+      { name: 'Total NFT Collections', stat: wallets0 },
       { name: 'Eth Price', stat: prices },
       { name: 'Gas (gwei)', stat: gases },
   ]
