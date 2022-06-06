@@ -85,9 +85,9 @@ export default function App() {
                 //setContracts(fetchedOrders.map(fetchedOrders => fetchedOrders.address))
                 let merged = data.map((item, i) => Object.assign({}, item, fetchedOrders[i]));
                   merged.sort(function (x, y) {
-                    return y.collection.stats.total_volume - x.collection.stats.total_volume;
+                    return y.collection.stats.floor_price - x.collection.stats.floor_price;
                   })
-                console.log(merged);
+                console.log(fetchedOrders);
                 setFilterData(merged);
                 setWallets(merged);
               });
@@ -284,15 +284,14 @@ export default function App() {
                               <div className="grid grid-cols-4 gap-4">
 
                                   {filterData && filterData.map((wallet, index) => {
-                                    const f = wallet.collection.stats.floor_price;
+                                    const floor = wallet.collection.stats.floor_price;
+                                    //console.log(floor)
                                     const v = wallet.collection.stats.total_volume;
                                     const volume = v.toFixed(2)
+
+
                                     const y = wallet.collection.image_url
                                     //console.log(w)
-
-                                    if(!f) return
-                                    const floor = f.toString().replace(/[]/g, '0');
-                                    //console.log(floor)
 
                                   return(
                                   <div className="wallet" key={index}>
