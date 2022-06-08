@@ -358,7 +358,6 @@ export async function getServerSideProps() {
             );
             Promise.all(responses)
 
-
       return {
         props: data
       }
