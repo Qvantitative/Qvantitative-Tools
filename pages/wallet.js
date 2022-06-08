@@ -68,13 +68,10 @@ export default function App() {
         const baseURL3 = "https://api.opensea.io/api/v1/collection"
 
         const fetchURL = `${baseURL2}?asset_owner=${accounts[0]}&offset=0&limit=300`;
-        fetch(fetchURL, {
-          method: 'GET',
-          redirect: 'follow',
-        })
+        fetch(fetchURL)
           .then(resp => resp.json())
           .then(data => {
-            //console.log(data)
+            console.log(data)
             setWallets0(data.length);
             const responses = data.map((data) =>
               fetch(`${baseURL3}/${data.slug}`)
@@ -87,7 +84,7 @@ export default function App() {
                   merged.sort(function (x, y) {
                     return y.collection.stats.floor_price - x.collection.stats.floor_price;
                   })
-                console.log(fetchedOrders);
+                //console.log(fetchedOrders);
                 setFilterData(merged);
                 setWallets(merged);
               });
@@ -110,10 +107,6 @@ export default function App() {
 
   async function fetchStats() {
     const {ethereum} = window;
-
-    if (!ethereum) {
-      alert("Please install Metamask!");
-    }
 
     if (ethereum) {
 
@@ -333,10 +326,28 @@ export default function App() {
 }
 
 export async function getServerSideProps() {
-  const res = await fetch('https://api.opensea.io/api/v1/collection');
-  const data = await res.json()
+  const {ethereum} = window;
 
-  return {
-    props: data,
-  };
+  if (ethereum) {
+
+    try {
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts",
+      });
+
+      const baseURL2 = "https://api.opensea.io/api/v1/collections"
+      const baseURL3 = "https://api.opensea.io/api/v1/collection"
+
+      const fetchURL = `${baseURL2}?asset_owner=${accounts[0]}&offset=0&limit=300`;
+
+      const data = await fetch(fetchURL);
+      const slugs = await data.json();
+      console.log(slugs)
+
+      return {props: {slugs}}
+
+    } catch (err) {
+      console.log(err);
+    }
+  }
 }
