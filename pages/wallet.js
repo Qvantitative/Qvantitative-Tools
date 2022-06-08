@@ -343,15 +343,27 @@ export async function getServerSideProps() {
       });
 
       const baseURL2 = "https://api.opensea.io/api/v1/collections"
-      //const baseURL3 = "https://api.opensea.io/api/v1/collection"
+      const baseURL3 = "https://api.opensea.io/api/v1/collection"
 
       const fetchURL = `${baseURL2}?asset_owner=${accounts[0]}&offset=0&limit=300`;
-      const res = await fetch(fetchURL);
-      const data = await res.json()
+      fetch(fetchURL, {
+          method: 'GET',
+          redirect: 'follow',
+        })
+          .then(resp => resp.json())
+          .then(data => {
+            const responses = data.map((data) =>
+                fetch(`${baseURL3}/${data.slug}`)
+                    .then((res) => res.json()),
+            );
+            Promise.all(responses)
+
 
       return {
         props: data
       }
+
+      })
 
       } catch (err) {
         console.log(err);
