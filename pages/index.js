@@ -2,7 +2,7 @@ import React from 'react';
 import Wallet from './wallet';
 import {useTheme} from 'next-themes'
 
-const Index = () => {
+function Index() {
   const {theme, setTheme} = useTheme()
 
   return (
