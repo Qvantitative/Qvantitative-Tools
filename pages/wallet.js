@@ -332,10 +332,31 @@ export default function App() {
   )
 }
 
-export const getServerSideProps = async () => {
-  const data = await App();
+export async function getServerSideProps() {
+  const {ethereum} = window;
 
-  return {
-    props: data,
-  };
+  if (ethereum) {
+
+    try {
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts",
+      });
+
+      const baseURL2 = "https://api.opensea.io/api/v1/collections"
+      //const baseURL3 = "https://api.opensea.io/api/v1/collection"
+
+      const fetchURL = `${baseURL2}?asset_owner=${accounts[0]}&offset=0&limit=300`;
+      const res = await fetch(fetchURL);
+      const data = await res.json()
+
+      return {
+        props: data
+      }
+
+      } catch (err) {
+        console.log(err);
+      }
+
+    }
+
 }
