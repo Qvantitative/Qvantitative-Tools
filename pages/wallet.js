@@ -418,7 +418,7 @@ export default function App() {
                           </div>
                           <input type="text " className="searchByName rounded-lg py-2 min-w-full" onChange={(e) => searchByName(e)} ></input>
                         </div>
-                        <div className="grid grid-cols-2 gap-10">
+                        <div className="grid grid-cols-1 gap-10">
                           <div className="my-2 sm:-mx-6 lg:-mx-8 overflow-x-auto">
                             <div className="py-2 align-middle h-96 min-w-full inline-block sm:px-6 lg:px-8 flex-row justify-between">
                               <div className="shadow sm:rounded-lg">
