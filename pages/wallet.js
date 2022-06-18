@@ -386,7 +386,6 @@ export default function App() {
                       <thead>
                         <tr>
                           <th>Latest Transaction</th>
-                          <th>Current Price</th>
                         </tr>
                       </thead>
                       {stats1 && stats1.map((item, index) => {
@@ -401,7 +400,10 @@ export default function App() {
                                 />
                                 {item.name}
                               </td>
-                              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.stat1}</td>
+                              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                <th>Current Price</th>
+                                {item.stat1}
+                              </td>
                             </tr>
                           </tbody>
                         )}
