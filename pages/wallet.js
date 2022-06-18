@@ -397,8 +397,6 @@ export default function App() {
                               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                 <th>Latest Transaction</th>
                                 {item.name}
-                              </td>
-                              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                 <th>Current Price</th>
                                 {item.stat1}
                               </td>
