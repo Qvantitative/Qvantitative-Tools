@@ -383,11 +383,6 @@ export default function App() {
                 <div className="py-4">
                   <div>
                     <table className="min-w-full divide-x divide-gray-200">
-                      <thead>
-                        <tr>
-                          <th>Latest Transaction</th>
-                        </tr>
-                      </thead>
                       {stats1 && stats1.map((item, index) => {
 
                         return(
@@ -398,6 +393,9 @@ export default function App() {
                                     className="inline-block h-20 w-20"
                                     src={item.stat}
                                 />
+                              </td>
+                              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                <th>Latest Transaction</th>
                                 {item.name}
                               </td>
                               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
