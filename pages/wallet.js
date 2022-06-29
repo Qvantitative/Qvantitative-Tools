@@ -117,7 +117,7 @@ export default function App() {
   const [txPrice, setTxPrice] = useState(null);
   const [txName, setTxName] = useState(null);
   const [txTime, setTxTime] = useState(null);
-
+  const [owners, setOwners] = useState(null);
   const Web3Api = useMoralisWeb3Api();
 
   //  const checkWalletIsConnected = async () => {
@@ -475,6 +475,8 @@ export default function App() {
                                                       })
                                                       //console.log(merged)
 
+                                                      setOwners(merged.length)
+
                                                       let sum = merged.reduce(function (prev, current) {
                                                         return prev + +current.tokenCount
                                                       }, 0);
@@ -487,7 +489,7 @@ export default function App() {
 
                                                       let merged1 = arrIntersection.map((item, i) => Object.assign({}, item, fetchedOrders[i].collections[0].collection));
                                                       let distribution = [].concat([merged1[0].tokenCount - sum], sum).map(Number);
-                                                      console.log(distribution);
+                                                      //console.log(distribution);
 
                                                       let ctx = document.getElementById("myChart").getContext('2d')
 
@@ -554,6 +556,9 @@ export default function App() {
                             </div>
                           </div>
                           <div>
+                            <div className="bg-gray-700 text-white font-bold py-4 px-8 rounded">
+                              <div><strong>BAYC Owners: {owners}</strong></div>
+                            </div>
                             {
                               (loading)
                               ?
