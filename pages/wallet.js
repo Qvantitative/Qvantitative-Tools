@@ -388,11 +388,7 @@ export default function App() {
 
                         return(
                           <tbody key={index} className="bg-gray-800">
-                            <tr className="whitespace-nowrap px-3 py-4 text-sm text-white">
-                              <th>Project</th>
-                              <th>Latest Transaction</th>
-                              <th>Current Price</th>
-                            </tr>
+                            <tr>Last Transaction + Current Price</tr>
                             <tr className={stats1 % 2 === 0 ? 'bg-white' : 'bg-gray-700'}>
                               <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
                                 <img className="inline-block h-20 w-20" src={item.stat}/>
