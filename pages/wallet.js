@@ -559,12 +559,12 @@ export default function App() {
                             </div>
                           </div>
                           <div>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-1">
                               <div className="bg-gray-700 text-white font-bold py-4 px-8 rounded">
                                 <div><strong>BAYC Owners: {owners}</strong></div>
                               </div>
                               <div className="bg-gray-700 text-white font-bold py-4 px-8 rounded">
-                                <div><strong>Amount of Apes Owned: {amount}</strong></div>
+                                <div><strong>Apes Owned: {amount}</strong></div>
                               </div>
                             </div>
                             {
