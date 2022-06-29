@@ -389,7 +389,7 @@ export default function App() {
                         return(
                           <tbody key={index} className="bg-gray-800">
                             <tr className="whitespace-nowrap px-3 py-4 text-sm text-white">
-                              <th></th>
+                              <th>Project</th>
                               <th>Latest Transaction</th>
                               <th>Current Price</th>
                             </tr>
