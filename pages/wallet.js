@@ -556,9 +556,6 @@ export default function App() {
                             </div>
                           </div>
                           <div>
-                            <div className="bg-gray-700 text-white font-bold py-4 px-8 rounded">
-                              <strong>BAYC Owners: {owners}</strong>
-                            </div>
                             {
                               (loading)
                               ?
