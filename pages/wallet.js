@@ -523,7 +523,7 @@ export default function App() {
 
                                     return(
                                       <div className="wallet " key={index}>
-                                        <div className={filterData % 2 === 0 ? 'bg-white' : 'bg-gray-50 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-8' }>
+                                        <div className={filterData % 2 === 0 ? 'bg-white' : 'bg-gray-50 transition ease-in-out delay-150 duration-300 px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-8' }>
                                           <div className="whitespace-nowrap text-sm font-medium text-gray-500">
                                             <button onClick={onButtonClick} disabled={loading}>
                                               <img
