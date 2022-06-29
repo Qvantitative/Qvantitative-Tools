@@ -118,6 +118,8 @@ export default function App() {
   const [txName, setTxName] = useState(null);
   const [txTime, setTxTime] = useState(null);
   const [owners, setOwners] = useState(null);
+  const [amount, setAmount] = useState(null);
+  const [amount1, setAmount1] = useState(null);
   const Web3Api = useMoralisWeb3Api();
 
   //  const checkWalletIsConnected = async () => {
@@ -473,7 +475,7 @@ export default function App() {
                                                       merged.sort(function (x, y) {
                                                         return y.tokenCount - x.tokenCount;
                                                       })
-                                                      console.log(merged)
+                                                      //console.log(merged)
 
                                                       setOwners(merged.length)
 
@@ -490,6 +492,8 @@ export default function App() {
                                                       let merged1 = arrIntersection.map((item, i) => Object.assign({}, item, fetchedOrders[i].collections[0].collection));
                                                       let distribution = [].concat([merged1[0].tokenCount - sum], sum).map(Number);
                                                       //console.log(distribution);
+
+                                                      setAmount(distribution[1])
 
                                                       let ctx = document.getElementById("myChart").getContext('2d');
 
@@ -555,8 +559,13 @@ export default function App() {
                             </div>
                           </div>
                           <div>
-                            <div className="bg-gray-700 text-white font-bold py-4 px-8 rounded">
-                              <div><strong>BAYC Owners: {owners}</strong></div>
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="bg-gray-700 text-white font-bold py-4 px-8 rounded">
+                                <div><strong>BAYC Owners: {owners}</strong></div>
+                              </div>
+                              <div className="bg-gray-700 text-white font-bold py-4 px-8 rounded">
+                                <div><strong>Amount of Apes Owned: {amount}</strong></div>
+                              </div>
                             </div>
                             {
                               (loading)
