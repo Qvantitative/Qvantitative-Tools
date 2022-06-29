@@ -523,8 +523,8 @@ export default function App() {
 
                                     return(
                                       <div className="wallet " key={index}>
-                                        <div className={filterData % 2 === 0 ? 'bg-white' : 'bg-gray-50 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-8' }>
-                                          <div className="whitespace-nowrap text-sm font-medium text-gray-900">
+                                        <div className={filterData % 2 === 0 ? 'bg-white' : 'bg-gray-700 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-8' }>
+                                          <div className="whitespace-nowrap text-sm font-medium text-white">
                                             <button onClick={onButtonClick} disabled={loading}>
                                               <img
                                                   className="inline-block h-40 w-40"
@@ -534,15 +534,15 @@ export default function App() {
                                             <div><strong>NAME</strong></div>
                                             {wallet.collection.name}
                                           </div>
-                                          <div className="whitespace-nowrap text-sm font-medium text-gray-900">
+                                          <div className="whitespace-nowrap text-sm font-medium text-white">
                                             <div><strong>PRICE FLOOR</strong></div>
                                             {floor} eth
                                           </div>
-                                          <div className="whitespace-nowrap text-sm font-medium text-gray-900 place-items-end">
+                                          <div className="whitespace-nowrap text-sm font-medium text-white place-items-end">
                                             <div><strong>TOTAL VOLUME</strong></div>
                                             {volume} eth
                                           </div>
-                                          <div className="whitespace-nowrap text-sm font-medium text-gray-900 place-items-end">
+                                          <div className="whitespace-nowrap text-sm font-medium text-white place-items-end">
                                             <div><strong>24h PRICE CHANGE</strong></div>
                                             {wallet.collection.stats.one_day_change.toFixed(2)} eth
                                           </div>
@@ -558,8 +558,7 @@ export default function App() {
                           </div>
                           <div>
                             <div className="bg-gray-700 text-white font-bold py-4 px-8 rounded">
-                              <div><strong>BAYC Owners</strong></div>
-                              {owners}
+                              <div><strong>BAYC Owners: {owners}</strong></div>
                             </div>
                             {
                               (loading)
