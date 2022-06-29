@@ -388,10 +388,6 @@ export default function App() {
 
                         return(
                           <tbody key={index} className="bg-gray-800">
-                            <tr>
-                              <th className="font-bold whitespace-nowrap text-sm text-white">Latest Transaction</th>
-                              <th className="font-bold"></th>
-                            </tr>
                             <tr className={stats1 % 2 === 0 ? 'bg-white' : 'bg-gray-700'}>
                               <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
                                 <img
@@ -400,7 +396,10 @@ export default function App() {
                                 />
                               </td>
                               <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
+                                <td className="font-bold">Latest Transaction</td>
                                 {item.name}
+                                <td className="font-bold">Current Price</td>
+                                {item.stat1}
                               </td>
                             </tr>
                           </tbody>
