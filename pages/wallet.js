@@ -425,7 +425,7 @@ export default function App() {
 
                                     {filterData && filterData.map((wallet, index) => {
                                       const floor = wallet.collection.stats.floor_price;
-                                      console.log(wallet)
+                                      //console.log(wallet)
                                       const v = wallet.collection.stats.total_volume;
                                       const volume = v.toFixed(2)
 
@@ -516,6 +516,7 @@ export default function App() {
                                             })
                                         //console.log(floor)
                                       };
+
 
                                     return(
                                       <div className="wallet " key={index}>
