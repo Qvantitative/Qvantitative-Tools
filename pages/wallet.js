@@ -475,8 +475,6 @@ export default function App() {
                                                       })
                                                       //console.log(merged)
 
-                                                      setOwners(merged.length)
-
                                                       let sum = merged.reduce(function (prev, current) {
                                                         return prev + +current.tokenCount
                                                       }, 0);
@@ -489,7 +487,7 @@ export default function App() {
 
                                                       let merged1 = arrIntersection.map((item, i) => Object.assign({}, item, fetchedOrders[i].collections[0].collection));
                                                       let distribution = [].concat([merged1[0].tokenCount - sum], sum).map(Number);
-                                                      //console.log(distribution);
+                                                      console.log(distribution);
 
                                                       let ctx = document.getElementById("myChart").getContext('2d')
 
