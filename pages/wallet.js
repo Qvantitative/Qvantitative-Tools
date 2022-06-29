@@ -386,6 +386,7 @@ export default function App() {
                     <table className="min-w-full divide-x divide-gray-200">
                       {stats1 && stats1.map((item, index) => {
 
+
                         return(
                           <tbody key={index} className="bg-gray-800">
                             <tr className="whitespace-nowrap px-3 py-4 text-sm text-white">
