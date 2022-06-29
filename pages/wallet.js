@@ -117,7 +117,7 @@ export default function App() {
   const [txPrice, setTxPrice] = useState(null);
   const [txName, setTxName] = useState(null);
   const [txTime, setTxTime] = useState(null);
-
+  const [owners, setOwners] = useState(null);
   const Web3Api = useMoralisWeb3Api();
 
   //  const checkWalletIsConnected = async () => {
@@ -388,17 +388,19 @@ export default function App() {
 
                         return(
                           <tbody key={index} className="bg-gray-800">
+                            <tr className="whitespace-nowrap px-3 py-4 text-sm text-white">
+                              <th></th>
+                              <th>Latest Transaction</th>
+                              <th>Current Price</th>
+                            </tr>
                             <tr className={stats1 % 2 === 0 ? 'bg-white' : 'bg-gray-700'}>
                               <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
-                                <img
-                                    className="inline-block h-20 w-20"
-                                    src={item.stat}
-                                />
+                                <img className="inline-block h-20 w-20" src={item.stat}/>
                               </td>
                               <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
-                                <th>Latest Transaction</th>
                                 {item.name}
-                                <th>Current Price</th>
+                              </td>
+                              <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
                                 {item.stat1}
                               </td>
                             </tr>
@@ -417,7 +419,7 @@ export default function App() {
                           </div>
                           <input type="text " className="searchByName rounded-lg py-2 min-w-full" onChange={(e) => searchByName(e)} ></input>
                         </div>
-                        <div className="grid grid-cols-2 gap-10">
+                        <div className="grid grid-cols-1 gap-10">
                           <div className="my-2 sm:-mx-6 lg:-mx-8 overflow-x-auto">
                             <div className="py-2 align-middle h-96 min-w-full inline-block sm:px-6 lg:px-8 flex-row justify-between">
                               <div className="shadow sm:rounded-lg">
@@ -473,7 +475,9 @@ export default function App() {
                                                       merged.sort(function (x, y) {
                                                         return y.tokenCount - x.tokenCount;
                                                       })
-                                                      //console.log(merged)
+                                                      console.log(merged)
+
+                                                      setOwners(merged.length)
 
                                                       let sum = merged.reduce(function (prev, current) {
                                                         return prev + +current.tokenCount
@@ -487,9 +491,9 @@ export default function App() {
 
                                                       let merged1 = arrIntersection.map((item, i) => Object.assign({}, item, fetchedOrders[i].collections[0].collection));
                                                       let distribution = [].concat([merged1[0].tokenCount - sum], sum).map(Number);
-                                                      console.log(distribution);
+                                                      //console.log(distribution);
 
-                                                      let ctx = document.getElementById("myChart").getContext('2d')
+                                                      let ctx = document.getElementById("myChart").getContext('2d');
 
                                                       const tmpChart = Chartjs.getChart('myChart');
                                                       if (tmpChart) {
@@ -516,7 +520,6 @@ export default function App() {
                                             })
                                         //console.log(floor)
                                       };
-
 
                                     return(
                                       <div className="wallet " key={index}>
@@ -554,6 +557,9 @@ export default function App() {
                             </div>
                           </div>
                           <div>
+                            <div className="bg-gray-700 text-white font-bold py-4 px-8 rounded">
+                              <div><strong>BAYC Owners: {owners}</strong></div>
+                            </div>
                             {
                               (loading)
                               ?
