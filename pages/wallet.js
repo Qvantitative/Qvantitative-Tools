@@ -117,7 +117,6 @@ export default function App() {
   const [txPrice, setTxPrice] = useState(null);
   const [txName, setTxName] = useState(null);
   const [txTime, setTxTime] = useState(null);
-  const [owners, setOwners] = useState(null);
   const Web3Api = useMoralisWeb3Api();
 
   //  const checkWalletIsConnected = async () => {
@@ -373,9 +372,9 @@ export default function App() {
                   <div>
                     <dl className="mt-5 grid grid-cols-2 gap-5 sm:grid-cols-4">
                       {stats.map((item) => (
-                        <div key={item.name} className="px-4 py-5 bg-gray-700 shadow rounded-lg overflow-hidden sm:p-6">
-                          <dt className="text-sm font-medium text-white truncate">{item.name}</dt>
-                          <dd className="mt-1 text-3xl font-semibold text-white">{item.stat}</dd>
+                        <div key={item.name} className="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+                          <dt className="text-sm font-medium text-gray-500 truncate">{item.name}</dt>
+                          <dd className="mt-1 text-3xl font-semibold text-gray-900">{item.stat}</dd>
                         </div>
                       ))}
                     </dl>
@@ -386,22 +385,19 @@ export default function App() {
                     <table className="min-w-full divide-x divide-gray-200">
                       {stats1 && stats1.map((item, index) => {
 
-
                         return(
-                          <tbody key={index} className="bg-gray-800">
-                            <tr className="whitespace-nowrap px-3 py-4 text-sm text-white">
-                              <th></th>
-                              <th>Latest Transaction</th>
-                              <th>Current Price</th>
-                            </tr>
-                            <tr className={stats1 % 2 === 0 ? 'bg-white' : 'bg-gray-700'}>
-                              <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
-                                <img className="inline-block h-20 w-20" src={item.stat}/>
+                          <tbody key={index} className="bg-white">
+                            <tr className={stats1 % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                <img
+                                    className="inline-block h-20 w-20"
+                                    src={item.stat}
+                                />
                               </td>
-                              <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
+                              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                <th>Latest Transaction</th>
                                 {item.name}
-                              </td>
-                              <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
+                                <th>Current Price</th>
                                 {item.stat1}
                               </td>
                             </tr>
@@ -420,7 +416,7 @@ export default function App() {
                           </div>
                           <input type="text " className="searchByName rounded-lg py-2 min-w-full" onChange={(e) => searchByName(e)} ></input>
                         </div>
-                        <div className="grid grid-cols-2 gap-10">
+                        <div className="grid grid-cols-1 gap-10">
                           <div className="my-2 sm:-mx-6 lg:-mx-8 overflow-x-auto">
                             <div className="py-2 align-middle h-96 min-w-full inline-block sm:px-6 lg:px-8 flex-row justify-between">
                               <div className="shadow sm:rounded-lg">
@@ -428,7 +424,7 @@ export default function App() {
 
                                     {filterData && filterData.map((wallet, index) => {
                                       const floor = wallet.collection.stats.floor_price;
-                                      //console.log(wallet)
+                                      console.log(wallet)
                                       const v = wallet.collection.stats.total_volume;
                                       const volume = v.toFixed(2)
 
@@ -476,9 +472,7 @@ export default function App() {
                                                       merged.sort(function (x, y) {
                                                         return y.tokenCount - x.tokenCount;
                                                       })
-                                                      console.log(merged)
-
-                                                      setOwners(merged.length)
+                                                      //console.log(merged)
 
                                                       let sum = merged.reduce(function (prev, current) {
                                                         return prev + +current.tokenCount
@@ -492,9 +486,9 @@ export default function App() {
 
                                                       let merged1 = arrIntersection.map((item, i) => Object.assign({}, item, fetchedOrders[i].collections[0].collection));
                                                       let distribution = [].concat([merged1[0].tokenCount - sum], sum).map(Number);
-                                                      //console.log(distribution);
+                                                      console.log(distribution);
 
-                                                      let ctx = document.getElementById("myChart").getContext('2d');
+                                                      let ctx = document.getElementById("myChart").getContext('2d')
 
                                                       const tmpChart = Chartjs.getChart('myChart');
                                                       if (tmpChart) {
@@ -524,8 +518,8 @@ export default function App() {
 
                                     return(
                                       <div className="wallet " key={index}>
-                                        <div className={filterData % 2 === 0 ? 'bg-white' : 'bg-gray-700 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-8' }>
-                                          <div className="whitespace-nowrap text-sm font-medium text-white">
+                                        <div className={filterData % 2 === 0 ? 'bg-white' : 'bg-gray-50 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-8' }>
+                                          <div className="whitespace-nowrap text-sm font-medium text-gray-900">
                                             <button onClick={onButtonClick} disabled={loading}>
                                               <img
                                                   className="inline-block h-40 w-40"
@@ -535,15 +529,15 @@ export default function App() {
                                             <div><strong>NAME</strong></div>
                                             {wallet.collection.name}
                                           </div>
-                                          <div className="whitespace-nowrap text-sm font-medium text-white">
+                                          <div className="whitespace-nowrap text-sm font-medium text-gray-900">
                                             <div><strong>PRICE FLOOR</strong></div>
                                             {floor} eth
                                           </div>
-                                          <div className="whitespace-nowrap text-sm font-medium text-white place-items-end">
+                                          <div className="whitespace-nowrap text-sm font-medium text-gray-900 place-items-end">
                                             <div><strong>TOTAL VOLUME</strong></div>
                                             {volume} eth
                                           </div>
-                                          <div className="whitespace-nowrap text-sm font-medium text-white place-items-end">
+                                          <div className="whitespace-nowrap text-sm font-medium text-gray-900 place-items-end">
                                             <div><strong>24h PRICE CHANGE</strong></div>
                                             {wallet.collection.stats.one_day_change.toFixed(2)} eth
                                           </div>
@@ -558,9 +552,6 @@ export default function App() {
                             </div>
                           </div>
                           <div>
-                            <div className="bg-gray-700 text-white font-bold py-4 px-8 rounded">
-                              <div><strong>BAYC Owners: {owners}</strong></div>
-                            </div>
                             {
                               (loading)
                               ?
