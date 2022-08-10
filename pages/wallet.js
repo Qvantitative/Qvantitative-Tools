@@ -67,28 +67,6 @@ const web3 = new Web3("https://mainnet.infura.io/v3/830febf016234fa7b49566eaf9a0
 const CoinGecko = require('coingecko-api');
 const CoinGeckoClient = new CoinGecko();
 
-const navigation = [
-  { name: 'Home', href: '/home', icon: HomeIcon, current: true },
-]
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
-
-const chartConfig = {
-  type: "pie",
-  data: {
-    labels: [],
-    datasets: [
-        {
-          data: [],
-          backgroundColor: chartColors,
-          hoverBackgroundColor: chartColors
-        }
-        ]
-  },
-};
-
 const baseURL = "https://eth-mainnet.alchemyapi.io/nft/v2/rpgRyd5BBElsZ8OaDerQFRH3ZfXIb_nw/getOwnersForCollection/";
 const baseURL1 = "https://api.reservoir.tools/users/"
 const baseURL2 = "https://api.opensea.io/api/v1/collections";
@@ -101,8 +79,6 @@ const fetchURL2 = `${baseURL}?contractAddress=0xBC4CA0EdA7647A8aB7C2061c2E118A18
 const req = new Request(fetchURL1)
 
 export default function App() {
-  const chartContainer = useRef(null);
-  const [chartInstance, setChartInstance] = useState(null);
   const [wallets, setWallets] = useState(null);
   const [wallets0, setWallets0] = useState(null);
   const [balances, setBalances] = useState(null);
@@ -116,10 +92,8 @@ export default function App() {
   const [txs, setTxs] = useState(null);
   const [txPrice, setTxPrice] = useState(null);
   const [txName, setTxName] = useState(null);
-  const [txTime, setTxTime] = useState(null);
   const [owners, setOwners] = useState(null);
   const [amount, setAmount] = useState(null);
-  const [amount1, setAmount1] = useState(null);
   const Web3Api = useMoralisWeb3Api();
 
   //  const checkWalletIsConnected = async () => {
@@ -154,7 +128,7 @@ export default function App() {
         fetch(`${baseURL2}?asset_owner=${accounts[0]}&offset=0&limit=300`)
           .then(resp => resp.json())
           .then(data => {
-            //console.log(data)
+            console.log(data)
             setWallets0(data.length);
             const responses = data.map((data) =>
               fetch(`${baseURL3}/${data.slug}`)
@@ -172,7 +146,7 @@ export default function App() {
                 let xAddress = addys.filter(x => x.address !== undefined)
                 //xAddress.pop()
 
-                //console.log(xAddress);
+                console.log(xAddress);
                 setFilterData(xAddress);
                 setWallets(xAddress);
               });
@@ -427,7 +401,7 @@ export default function App() {
 
                                     {filterData && filterData.map((wallet, index) => {
                                       const floor = wallet.collection.stats.floor_price;
-                                      //console.log(wallet)
+                                      //console.log(wallet.address)
                                       const v = wallet.collection.stats.total_volume;
                                       const volume = v.toFixed(2)
 
@@ -457,7 +431,7 @@ export default function App() {
                                             ))
                                             .then(data => {
 
-                                              //console.log(arrIntersection)
+                                              //console.log(data)
                                               let arrIntersection = data[0].filter((a) => {
                                                 return data[1].includes(a)
                                               }).map(item => ({ownerAddress: item}))
@@ -470,7 +444,7 @@ export default function App() {
                                                 );
                                                 Promise.all(responses)
                                                     .then(fetchedOrders => {
-                                                      //console.log(fetchedOrders)
+                                                      console.log(fetchedOrders)
                                                       let merged = arrIntersection.map((item, i) => Object.assign({}, item, fetchedOrders[i].collections[0].ownership));
                                                       merged.sort(function (x, y) {
                                                         return y.tokenCount - x.tokenCount;
@@ -493,7 +467,7 @@ export default function App() {
                                                       let distribution = [].concat([merged1[0].tokenCount - sum], sum).map(Number);
                                                       //console.log(distribution);
                                                       let distribution1 = distribution[0] / 10000
-                                                      console.log(distribution1);
+                                                      //console.log(distribution1);
 
                                                       setAmount(distribution[1])
 
@@ -548,7 +522,7 @@ export default function App() {
                                           </div>
                                           <div className="whitespace-nowrap text-sm font-medium text-gray-500 place-items-end">
                                             <div><strong>24h PRICE CHANGE</strong></div>
-                                            {wallet.collection.stats.one_day_change.toFixed(2)} eth
+                                            {wallet.collection.stats.one_day_change.toFixed(2)}
                                           </div>
 
                                         </div>
