@@ -26,6 +26,7 @@
     "danfojs-nightly": "^1.0.2",
     "danfojs-node": "^1.0.2",
     "ethers": "^5.5.2",
+    "firebase": "^9.15.0",
     "framer-motion": "^4.1.17",
     "magic-sdk": "^8.1.1",
     "moralis": "^1.7.0",
