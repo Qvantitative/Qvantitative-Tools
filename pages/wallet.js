@@ -4,7 +4,6 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import {BellIcon, HomeIcon, MenuIcon, XIcon} from '@heroicons/react/outline'
 import {useMoralisWeb3Api} from "react-moralis";
 import Chartjs from "chart.js/auto";
-import { initializeApp } from 'firebase/app';
 
 const chartColors = [
   "#336699",
