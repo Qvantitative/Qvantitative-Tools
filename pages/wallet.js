@@ -4,6 +4,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import {BellIcon, HomeIcon, MenuIcon, XIcon} from '@heroicons/react/outline'
 import {useMoralisWeb3Api} from "react-moralis";
 import Chartjs from "chart.js/auto";
+import { initializeApp } from 'firebase/app';
 
 const chartColors = [
   "#336699",
@@ -74,6 +75,7 @@ const baseURL3 = "https://api.opensea.io/api/v1/collection";
 const baseURL4 = " https://api.covalenthq.com/v1/1/nft_market/collection";
 const fetchURL1 = `${baseURL}?contractAddress=0xbd4455da5929d5639ee098abfaa3241e9ae111af`;
 const fetchURL2 = `${baseURL}?contractAddress=0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D`;
+const fetchURL3 = `${baseURL}?contractAddress=0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB`;
 //const fetchURL3 = `${baseURL1}0x3572DB2E377a4efECa5CBd58A241979C7Cdb00aE/collections/v2?collection=0xCa7cA7BcC765F77339bE2d648BA53ce9c8a262bD&includeTopBid=false&offset=0`;
 //const fetchURL4 = `${baseURL4}/0xbd4455da5929d5639ee098abfaa3241e9ae111af/?&key=ckey_b7d4ed5a9a1a40b79ff9a65e8c4`;
 const req = new Request(fetchURL1)
@@ -128,7 +130,7 @@ export default function App() {
         fetch(`${baseURL2}?asset_owner=${accounts[0]}&offset=0&limit=300`)
           .then(resp => resp.json())
           .then(data => {
-            console.log(data)
+            //console.log(data)
             setWallets0(data.length);
             const responses = data.map((data) =>
               fetch(`${baseURL3}/${data.slug}`)
@@ -146,7 +148,7 @@ export default function App() {
                 let xAddress = addys.filter(x => x.address !== undefined)
                 //xAddress.pop()
 
-                console.log(xAddress);
+                //console.log(xAddress);
                 setFilterData(xAddress);
                 setWallets(xAddress);
               });
@@ -154,7 +156,7 @@ export default function App() {
 
         // get ENS domain of an address
         const options = { address: accounts[0] };
-        const resolve = await Web3Api.resolve.resolveAddress(options);
+        const resolve = await Moralis.Web3API.resolve.resolveAddress(options);
         console.log(resolve.name);
         setCurrentAccount1(resolve.name)
 
@@ -210,7 +212,7 @@ export default function App() {
         for (i=i; i<transfersNFT.result.length; i++) {
           setTxPrice(transfersNFT.result[i].value)
           //setTxTime(transfersNFT.result[i].block_timestamp)
-          //console.log(transfersNFT.result[i]);
+          console.log(transfersNFT.result[i]);
 
           fetch(`https://api.reservoir.tools/collection/v2?id=${transfersNFT.result[0].token_address}`)
           .then(resp => resp.json())
@@ -393,11 +395,11 @@ export default function App() {
                           </div>
                           <input type="text " className="searchByName rounded-lg py-2 min-w-full" onChange={(e) => searchByName(e)} ></input>
                         </div>
-                        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-10 sm:grid-cols-1">
                           <div className="my-2 sm:-mx-6 lg:-mx-8 overflow-x-auto">
                             <div className="py-2 align-middle h-96 min-w-full inline-block sm:px-6 lg:px-8 flex-row justify-between">
-                              <div className="shadow sm:rounded-lg">
-                                <div className="grid grid-cols-1 gap-4">
+                              <div className="shadow sm:rounded-sm">
+                                <div className="grid grid-cols-6 gap-1">
 
                                     {filterData && filterData.map((wallet, index) => {
                                       const floor = wallet.collection.stats.floor_price;
@@ -418,9 +420,16 @@ export default function App() {
 
                                         const url1 = `${baseURL}?contractAddress=${wallet.address}`
                                         const url2 = fetchURL2
+                                        const url3 = fetchURL3
+
                                         const urls = [
                                             url1,
                                             url2,
+                                        ];
+
+                                        const urls2 = [
+                                            url1,
+                                            url3,
                                         ];
 
                                         Promise.all(
@@ -509,22 +518,7 @@ export default function App() {
                                                   src={y}
                                               />
                                             </button>
-                                            <div><strong>NAME</strong></div>
-                                            {wallet.collection.name}
                                           </div>
-                                          <div className="whitespace-nowrap text-sm font-medium text-gray-500">
-                                            <div><strong>PRICE FLOOR</strong></div>
-                                            {floor} eth
-                                          </div>
-                                          <div className="whitespace-nowrap text-sm font-medium text-gray-500 place-items-end">
-                                            <div><strong>TOTAL VOLUME</strong></div>
-                                            {volume} eth
-                                          </div>
-                                          <div className="whitespace-nowrap text-sm font-medium text-gray-500 place-items-end">
-                                            <div><strong>24h PRICE CHANGE</strong></div>
-                                            {wallet.collection.stats.one_day_change.toFixed(2)}
-                                          </div>
-
                                         </div>
                                       </div>
 
@@ -535,14 +529,6 @@ export default function App() {
                             </div>
                           </div>
                           <div>
-                            <div className="grid grid-cols-2 gap-1">
-                              <div className="bg-gray-700 text-white font-bold py-4 px-8 rounded">
-                                <div><strong>BAYC Owners: {owners}</strong></div>
-                              </div>
-                              <div className="bg-gray-700 text-white font-bold py-4 px-8 rounded">
-                                <div><strong>Apes Owned: {amount}</strong></div>
-                              </div>
-                            </div>
                             {
                               (loading)
                               ?
