@@ -398,7 +398,7 @@ export default function App() {
                           <div className="my-2 sm:-mx-6 lg:-mx-8 overflow-x-auto">
                             <div className="py-2 align-middle h-96 min-w-full inline-block sm:px-6 lg:px-8 flex-row justify-between">
                               <div className="shadow sm:rounded-sm">
-                                <div className="grid grid-cols-6 gap-1">
+                                <div className="grid grid-cols-4 gap-1">
 
                                     {filterData && filterData.map((wallet, index) => {
                                       const floor = wallet.collection.stats.floor_price;
