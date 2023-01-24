@@ -524,6 +524,7 @@ export default function App() {
                                                         },
                                                       });
 
+
                                                       //new Chartjs(ctx,{
                                                       //  type: "pie",
                                                       //  data: {
