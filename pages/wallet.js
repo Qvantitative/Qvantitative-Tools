@@ -198,7 +198,6 @@ export default function App() {
     }
   }
 
-
   async function fetchTx() {
     const {ethereum} = window;
 
