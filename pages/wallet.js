@@ -476,7 +476,7 @@ export default function App() {
 
                                                       let merged1 = arrIntersection.map((item, i) => Object.assign({}, item, fetchedOrders[i].collections[0].collection));
                                                       let distribution = [].concat([merged1[0].tokenCount - sum], sum).map(Number);
-                                                      console.log(mergedOwner);
+                                                      //console.log(mergedOwner);
                                                       //let distribution1 = distribution[0] / 10000
                                                       //console.log(distribution1);
 
