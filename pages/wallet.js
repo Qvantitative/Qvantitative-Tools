@@ -138,9 +138,10 @@ export default function App() {
         );
           Promise.all(responses)
               .then(fetchedOrders => {
-                fetchedOrders.sort(function (x, y) {
-                  return y.collection.stats.floor_price - x.collection.stats.floor_price;
-                })
+                console.log(fetchedOrders)
+                //fetchedOrders.sort(function (x, y) {
+                  //return y.collection.stats.floor_price - x.collection.stats.floor_price;
+                //})
 
                 let addy = fetchedOrders.map((item, i) => Object.assign({}, item, fetchedOrders[i].collection.primary_asset_contracts))
                 let addys = fetchedOrders.map((item, i) => Object.assign({}, item, addy[i][0]))
