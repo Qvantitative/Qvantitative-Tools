@@ -88,6 +88,7 @@ export default function App() {
   const [filterData, setFilterData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loading1, setLoading1] = useState(false);
   const [currentAccount, setCurrentAccount] = useState(null);
   const [currentAccount1, setCurrentAccount1] = useState(null);
   const [txs, setTxs] = useState(null);
@@ -156,7 +157,7 @@ export default function App() {
         // get ENS domain of an address
         const options = { address: accounts[0] };
         const resolve = await Moralis.Web3API.resolve.resolveAddress(options);
-        console.log(resolve.name);
+        //console.log(resolve.name);
         setCurrentAccount1(resolve.name)
 
       } catch (err) {
@@ -211,7 +212,7 @@ export default function App() {
         for (i=i; i<transfersNFT.result.length; i++) {
           setTxPrice(transfersNFT.result[i].value)
           //setTxTime(transfersNFT.result[i].block_timestamp)
-          console.log(transfersNFT.result[i]);
+          //console.log(transfersNFT.result[i]);
 
           fetch(`https://api.reservoir.tools/collection/v2?id=${transfersNFT.result[0].token_address}`)
           .then(resp => resp.json())
@@ -394,6 +395,7 @@ export default function App() {
                           </div>
                           <input type="text " className="searchByName rounded-lg py-2 min-w-full" onChange={(e) => searchByName(e)} ></input>
                         </div>
+
                         <div className="grid grid-cols-1 gap-10 sm:grid-cols-1">
                           <div className="my-2 sm:-mx-6 lg:-mx-8 overflow-x-auto">
                             <div className="py-2 align-middle h-96 min-w-full inline-block sm:px-6 lg:px-8 flex-row justify-between">
@@ -407,6 +409,7 @@ export default function App() {
                                       const volume = v.toFixed(2)
 
                                       const y = wallet.collection.image_url
+                                      //const z = wallet.collection.
                                       //console.log(w)
 
                                       //const onButtonClick = () => {
@@ -452,7 +455,7 @@ export default function App() {
                                                 );
                                                 Promise.all(responses)
                                                     .then(fetchedOrders => {
-                                                      console.log(fetchedOrders)
+                                                      //console.log(fetchedOrders)
                                                       let merged = arrIntersection.map((item, i) => Object.assign({}, item, fetchedOrders[i].collections[0].ownership));
                                                       merged.sort(function (x, y) {
                                                         return y.tokenCount - x.tokenCount;
@@ -466,15 +469,15 @@ export default function App() {
                                                       }, 0);
                                                       //console.log(sum)
 
-                                                      //let mergedOwner = merged.map(({ownerAddress})=>[ownerAddress]).flat(1);
-                                                      //let mergedToken = merged.map(({tokenCount})=>[tokenCount]).flat(1);
-                                                      //let mergedCount = mergedToken.map(Number)
-                                                      //mergedCount.unshift(sum)
+                                                      let mergedOwner = merged.map(({ownerAddress})=>[ownerAddress]).flat(1);
+                                                      let mergedToken = merged.map(({tokenCount})=>[tokenCount]).flat(1);
+                                                      let mergedCount = mergedToken.map(Number)
+                                                      mergedCount.unshift(sum)
 
                                                       let merged1 = arrIntersection.map((item, i) => Object.assign({}, item, fetchedOrders[i].collections[0].collection));
                                                       let distribution = [].concat([merged1[0].tokenCount - sum], sum).map(Number);
-                                                      //console.log(distribution);
-                                                      let distribution1 = distribution[0] / 10000
+                                                      //console.log(mergedCount[0]);
+                                                      //let distribution1 = distribution[0] / 10000
                                                       //console.log(distribution1);
 
                                                       setAmount(distribution[1])
@@ -487,18 +490,53 @@ export default function App() {
                                                       }
 
                                                       new Chartjs(ctx,{
-                                                        type: "pie",
+                                                        type: "bar",
                                                         data: {
-                                                          labels: [`Apes held from others`, `Apes held from ${wallet.collection.slug}`],
+                                                          labels: mergedOwner,
                                                           datasets: [
                                                               {
-                                                                data: distribution,
+                                                                label: `${mergedCount[0]} Ape/(s) Owned`,
+                                                                data: mergedToken,
                                                                 backgroundColor: chartColors,
                                                                 hoverBackgroundColor: chartColors
                                                               }
                                                               ]
                                                         },
+                                                        options: {
+                                                          indexAxis: 'y',
+                                                          // Elements options apply to all of the options unless overridden in a dataset
+                                                          // In this case, we are setting the border of each horizontal bar to be 2px wide
+                                                          elements: {
+                                                            bar: {
+                                                              borderWidth: 2,
+                                                            }
+                                                          },
+                                                          responsive: true,
+                                                          plugins: {
+                                                            legend: {
+                                                              position: 'right',
+                                                            },
+                                                            title: {
+                                                              display: true,
+                                                              text: `${mergedCount[0]} Ape/(s) owned by ${wallet.collection.slug} holders`
+                                                            }
+                                                          }
+                                                        },
                                                       });
+
+                                                      //new Chartjs(ctx,{
+                                                      //  type: "pie",
+                                                      //  data: {
+                                                        //  labels: [`Apes held from others`, `Apes held from ${wallet.collection.slug}`],
+                                                        //  datasets: [
+                                                        //      {
+                                                        //        data: distribution,
+                                                        //        backgroundColor: chartColors,
+                                                        //        hoverBackgroundColor: chartColors
+                                                        //      }
+                                                        //      ]
+                                                        //},
+                                                      //});
 
                                                     });
                                                 setLoading(false)
