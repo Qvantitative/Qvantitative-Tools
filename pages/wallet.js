@@ -106,7 +106,7 @@ export default function App() {
   } = useMoralis();
 
   useEffect(() => {
-    if (!isAuthenticated) router.replace("/home");
+    if (!isAuthenticated) router.replace("/");
   }, [isAuthenticated]);
 
   async function fetchWallet() {
