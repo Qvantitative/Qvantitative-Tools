@@ -344,6 +344,7 @@ export default function App() {
                       >
                         Disconnect
                       </a>
+                      <br/>
                       <Disclosure.Button>
                         {currentAccount1 || currentAccount}
                       </Disclosure.Button>
