@@ -90,7 +90,9 @@ export default function App() {
   const [filterData, setFilterData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loading1, setLoading1] = useState(false);
   const [currentAccount, setCurrentAccount] = useState(null);
+  const [currentAccount1, setCurrentAccount1] = useState(null);
   const [txs, setTxs] = useState(null);
   const [txPrice, setTxPrice] = useState(null);
   const [txName, setTxName] = useState(null);
@@ -124,7 +126,7 @@ export default function App() {
         });
               console.log(accounts);
               console.log("Found an account! Address: ", accounts[0]);
-        setCurrentAccount(accounts[0]);
+              setCurrentAccount(accounts[0]);
               setIsLoading((currentAccount) => !currentAccount);
 
         fetch(`${baseURL2}?asset_owner=${accounts[0]}&offset=0&limit=300`)
@@ -157,8 +159,8 @@ export default function App() {
 
         // get ENS domain of an address
         const options = { address: accounts[0] };
-        const resolve = await Moralis.Web3API.resolve.resolveAddress(options);
-        //console.log(resolve.name);
+        const resolve = await Web3Api.resolve.resolveAddress(options);
+        console.log(resolve.name);
         setCurrentAccount1(resolve.name)
 
       } catch (err) {
@@ -323,6 +325,10 @@ export default function App() {
                               >
                                 Disconnect
                               </a>
+                              <br/>
+                              <div>
+                                {currentAccount1 || currentAccount}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -341,6 +347,10 @@ export default function App() {
                         >
                           Disconnect
                         </a>
+                        <br/>
+                        <div>
+                          {currentAccount1 || currentAccount}
+                        </div>
                       </div>
                     </div>
                   </Disclosure.Panel>
