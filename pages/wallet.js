@@ -1,9 +1,11 @@
 /* This example requires Tailwind CSS v2.0+ */
 import React, {Fragment, useEffect, useRef, useState} from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import {BellIcon, HomeIcon, MenuIcon, XIcon} from '@heroicons/react/outline'
-import {useMoralisWeb3Api} from "react-moralis";
+import {useMoralis, useMoralisWeb3Api} from "react-moralis";
 import Chartjs from "chart.js/auto";
+import { useRouter } from "next/router";
+import { ethers } from "ethers";
+
 
 const chartColors = [
   "#336699",
@@ -88,26 +90,24 @@ export default function App() {
   const [filterData, setFilterData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [loading1, setLoading1] = useState(false);
   const [currentAccount, setCurrentAccount] = useState(null);
-  const [currentAccount1, setCurrentAccount1] = useState(null);
   const [txs, setTxs] = useState(null);
   const [txPrice, setTxPrice] = useState(null);
   const [txName, setTxName] = useState(null);
   const [owners, setOwners] = useState(null);
   const [amount, setAmount] = useState(null);
   const Web3Api = useMoralisWeb3Api();
+  const [logged, setLogged] = useState();
+  const router = useRouter();
+  const {
+    authenticate,
+    isAuthenticated,
+    logout
+  } = useMoralis();
 
-  //  const checkWalletIsConnected = async () => {
-  //    const { ethereum } = window;
-  //
-  //    if (!ethereum) {
-  //      console.log("Make sure you have Metamask installed!");
-  //      return;
-  //    } else {
-  //      console.log("Wallet exists! We're ready to go!")
-  //    }
-  //  }
+  useEffect(() => {
+    if (!isAuthenticated) router.replace("/home");
+  }, [isAuthenticated]);
 
   async function fetchWallet() {
     const {ethereum} = window;
@@ -122,38 +122,38 @@ export default function App() {
         const accounts = await ethereum.request({
           method: "eth_requestAccounts",
         });
-        console.log(accounts);
-        console.log("Found an account! Address: ", accounts[0]);
+              console.log(accounts);
+              console.log("Found an account! Address: ", accounts[0]);
         setCurrentAccount(accounts[0]);
-        setIsLoading((currentAccount) => !currentAccount);
+              setIsLoading((currentAccount) => !currentAccount);
 
         fetch(`${baseURL2}?asset_owner=${accounts[0]}&offset=0&limit=300`)
-          .then(resp => resp.json())
-          .then(data => {
-            //console.log(data)
-            setWallets0(data.length);
-            const responses = data.map((data) =>
-              fetch(`${baseURL3}/${data.slug}`)
-                .then((res) => res.json()),
-        );
-          Promise.all(responses)
-              .then(fetchedOrders => {
-                console.log(fetchedOrders)
-                //fetchedOrders.sort(function (x, y) {
-                  //return y.collection.stats.floor_price - x.collection.stats.floor_price;
-                //})
+            .then(resp => resp.json())
+            .then(data => {
+              //console.log(data)
+              setWallets0(data.length);
+              const responses = data.map((data) =>
+                  fetch(`${baseURL3}/${data.slug}`)
+                      .then((res) => res.json()),
+              );
+              Promise.all(responses)
+                  .then(fetchedOrders => {
+                    console.log(fetchedOrders)
+                    //fetchedOrders.sort(function (x, y) {
+                    //return y.collection.stats.floor_price - x.collection.stats.floor_price;
+                    //})
 
-                let addy = fetchedOrders.map((item, i) => Object.assign({}, item, fetchedOrders[i].collection.primary_asset_contracts))
-                let addys = fetchedOrders.map((item, i) => Object.assign({}, item, addy[i][0]))
-                //let merged = addys.map(({address})=>[address]).flat(1);
-                let xAddress = addys.filter(x => x.address !== undefined)
-                //xAddress.pop()
+                    let addy = fetchedOrders.map((item, i) => Object.assign({}, item, fetchedOrders[i].collection.primary_asset_contracts))
+                    let addys = fetchedOrders.map((item, i) => Object.assign({}, item, addy[i][0]))
+                    //let merged = addys.map(({address})=>[address]).flat(1);
+                    let xAddress = addys.filter(x => x.address !== undefined)
+                    //xAddress.pop()
 
-                //console.log(xAddress);
-                setFilterData(xAddress);
-                setWallets(xAddress);
-              });
-          });
+                    //console.log(xAddress);
+                    setFilterData(xAddress);
+                    setWallets(xAddress);
+                  });
+            });
 
         // get ENS domain of an address
         const options = { address: accounts[0] };
@@ -166,8 +166,14 @@ export default function App() {
       }
 
     } else {
-      console.log("Ethereum object does not exist");
+      console.log("Could not detect Account");
     }
+  }
+
+  async function handleLogout() {
+      await logout();
+      setLogged(false)
+      console.log("logged out");
   }
 
   async function fetchStats() {
@@ -207,10 +213,11 @@ export default function App() {
         });
 
         const transfersNFT = await Web3Api.account.getNFTTransfers({ address: accounts[0] });
-        //console.log(transfersNFT.result);
+        //console.log(transfersNFT.result[i].value);
         //setTxs(transfersNFT.result[0].token_address)
         for (i=i; i<transfersNFT.result.length; i++) {
-          setTxPrice(transfersNFT.result[i].value)
+          let price = transfersNFT.result[i].value
+          setTxPrice(price)
           //setTxTime(transfersNFT.result[i].block_timestamp)
           //console.log(transfersNFT.result[i]);
 
@@ -264,9 +271,9 @@ export default function App() {
 
   const stats = [
       { name: 'Wallet Balance (eth)', stat: balances },
-      { name: 'Total NFT Collections', stat: wallets0 },
       { name: 'Eth Price', stat: prices },
       { name: 'Gas (gwei)', stat: gases },
+      { name: 'Total NFT Collections', stat: wallets0 },
   ]
 
   const stats1 = [
@@ -309,35 +316,32 @@ export default function App() {
                       </div>
                       <div className="hidden md:block">
                         <div className="ml-4 flex items-center md:ml-6">
-                          <button
-                              type="button"
-                              className="bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
-                          >
-                            <span className="sr-only">View notifications</span>
-                              <h1 className="text-md font-bold text-white-900">{currentAccount1 || currentAccount}</h1>
-                          </button>
-
+                          <div className="App">
+                            <div>
+                              <a onClick={handleLogout}
+                                 href='home'
+                              >
+                                Disconnect
+                              </a>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div className="-mr-2 flex md:hidden">
                   {/* Mobile menu button */}
-                    <Disclosure.Button className="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 right-0 hover:text-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-                      <span className="sr-only ">Open main menu</span>
-                      {open ? (
-                        <XIcon className="block h-6 w-6 absolute inset-y-7 right-0" aria-hidden="true" />
-                      ) : (
-                        <MenuIcon className="block h-6 w-6 absolute inset-y-7 right-0" aria-hidden="true" />
-                      )}
-                    </Disclosure.Button>
                   </div>
 
                   <Disclosure.Panel className="border-b border-gray-700 md:hidden absolute inset-y-0 right-0">
-                    <div className="px-2 py-12 space-y-1 sm:px-3 absolute inset-y-0 right-0">
-                        <Disclosure.Button>
-                          {currentAccount1 || currentAccount}
-                        </Disclosure.Button>
+                    <div className="App">
+                      <div>
+                        <a onClick={handleLogout}
+                           href='home'
+                        >
+                          Disconnect
+                        </a>
+                      </div>
                     </div>
                   </Disclosure.Panel>
                 </>
@@ -476,7 +480,7 @@ export default function App() {
 
                                                       let merged1 = arrIntersection.map((item, i) => Object.assign({}, item, fetchedOrders[i].collections[0].collection));
                                                       let distribution = [].concat([merged1[0].tokenCount - sum], sum).map(Number);
-                                                      //console.log(mergedOwner);
+                                                      console.log(mergedOwner);
                                                       //let distribution1 = distribution[0] / 10000
                                                       //console.log(distribution1);
 
