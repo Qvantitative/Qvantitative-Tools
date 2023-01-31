@@ -23,7 +23,9 @@ export default function Example() {
                   <button
                       className="px-7 py-4 text-xl rounded-xl bg-purple-300 animate-pulse"
                       onClick={() =>
-                          authenticate({ signingMessage: "Authorize linking of your wallet" })
+                          authenticate({
+                              signingMessage: "Authorize linking of your wallet"
+                          })
                   }
                   >
                       Login using Metamask
