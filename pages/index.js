@@ -1,5 +1,5 @@
 import React from 'react';
-import Wallet from './wallet';
+import Wallet from './home';
 import {useTheme} from 'next-themes'
 
 function Index() {
