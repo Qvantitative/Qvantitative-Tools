@@ -30,19 +30,6 @@ export default function Example() {
                   >
                       Login using Metamask
                   </button>
-                  <br/>
-                  <br/>
-                  <button
-                      className="px-7 py-4 text-xl rounded-xl bg-purple-300 animate-pulse"
-                      onClick={() =>
-                          authenticate({
-                              provider: "walletconnect",
-                              signingMessage: "Authorize linking of your wallet"
-                          })
-                  }
-                  >
-                      Login using Wallet Connect
-                  </button>
               </div>
           </div>
           <svg
