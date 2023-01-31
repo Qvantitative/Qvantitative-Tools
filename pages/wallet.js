@@ -113,9 +113,6 @@ export default function App() {
   }, [isAuthenticated]);
 
   async function fetchWallet() {
-    const {ethereum} = window;
-
-    if (ethereum) {
 
       try {
         const accounts = await ethereum.request({
@@ -164,9 +161,6 @@ export default function App() {
         console.log(err);
       }
 
-    } else {
-      console.log("Could not detect Account");
-    }
   }
 
   async function handleLogout() {
