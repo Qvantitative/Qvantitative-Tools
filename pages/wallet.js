@@ -115,10 +115,6 @@ export default function App() {
   async function fetchWallet() {
     const {ethereum} = window;
 
-    if (!ethereum) {
-      alert("Please install Metamask!");
-    }
-
     if (ethereum) {
 
       try {
