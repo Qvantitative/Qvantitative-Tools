@@ -1,6 +1,7 @@
 /* This example requires Tailwind CSS v2.0+ */
 import React, {Fragment, useEffect, useRef, useState} from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
+import {BellIcon, HomeIcon, MenuIcon, XIcon} from '@heroicons/react/outline'
 import {useMoralis, useMoralisWeb3Api} from "react-moralis";
 import Chartjs from "chart.js/auto";
 import { useRouter } from "next/router";
@@ -318,14 +319,13 @@ export default function App() {
                       </div>
                       <div className="hidden md:block">
                         <div className="ml-4 flex items-center md:ml-6">
-                          <div className="App">
+                          <div className="px-2 py-4 space-y-1 sm:px-3 absolute right-0">
                             <div>
                               <a onClick={handleLogout}
                                  href='home'
                               >
                                 Disconnect
                               </a>
-                              <br/>
                               <div>
                                 {currentAccount1 || currentAccount}
                               </div>
@@ -337,21 +337,26 @@ export default function App() {
                   </div>
                   <div className="-mr-2 flex md:hidden">
                   {/* Mobile menu button */}
+                    <Disclosure.Button className="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 right-0 hover:text-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                      <span className="sr-only ">Open main menu</span>
+                      {open ? (
+                        <XIcon />
+                      ) : (
+                        <MenuIcon className="block h-6 w-6 absolute inset-y-7 right-0" aria-hidden="true" />
+                      )}
+                    </Disclosure.Button>
                   </div>
 
                   <Disclosure.Panel className="border-b border-gray-700 md:hidden absolute inset-y-0 right-0">
-                    <div className="App">
-                      <div>
-                        <a onClick={handleLogout}
-                           href='home'
-                        >
-                          Disconnect
-                        </a>
-                        <br/>
-                        <div>
-                          {currentAccount1 || currentAccount}
-                        </div>
-                      </div>
+                    <div className="px-2 py-4 space-y-1 sm:px-3 absolute right-0">
+                      <a onClick={handleLogout}
+                         href='home'
+                      >
+                        Disconnect
+                      </a>
+                      <Disclosure.Button>
+                        {currentAccount1 || currentAccount}
+                      </Disclosure.Button>
                     </div>
                   </Disclosure.Panel>
                 </>
