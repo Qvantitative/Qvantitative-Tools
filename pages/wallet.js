@@ -151,6 +151,24 @@ export default function App() {
                   });
             });
 
+        const transfersNFT = await Web3Api.account.getNFTTransfers({ address: accounts[0] });
+        //console.log(transfersNFT.result[i].value);
+        //setTxs(transfersNFT.result[0].token_address)
+        for (i=i; i<transfersNFT.result.length; i++) {
+          //setTxTime(transfersNFT.result[i].block_timestamp)
+          //console.log(transfersNFT);
+
+          fetch(`https://api.reservoir.tools/collections/activity/v5?collection=${transfersNFT.result[0].token_address}`)
+          .then(resp => resp.json())
+          .then(data => {
+            console.log(data.activities[0].price)
+            let price = data.activities[0].price
+            setTxPrice(price)
+            setTxs(data.activities[0].token.tokenImage)
+            setTxName(data.activities[0].token.tokenName)
+          });
+        }
+
         // get ENS domain of an address
         const options = { address: accounts[0] };
         const resolve = await Web3Api.resolve.resolveAddress(options);
@@ -197,38 +215,6 @@ export default function App() {
     }
   }
 
-  async function fetchTx() {
-    const {ethereum} = window;
-
-      try {
-        const accounts = await ethereum.request({
-          method: "eth_requestAccounts",
-        });
-
-        const transfersNFT = await Web3Api.account.getNFTTransfers({ address: accounts[0] });
-        //console.log(transfersNFT.result[i].value);
-        //setTxs(transfersNFT.result[0].token_address)
-        for (i=i; i<transfersNFT.result.length; i++) {
-          let price = transfersNFT.result[i].value
-          setTxPrice(price)
-          //setTxTime(transfersNFT.result[i].block_timestamp)
-          //console.log(transfersNFT.result[i]);
-
-          fetch(`https://api.reservoir.tools/collection/v2?id=${transfersNFT.result[0].token_address}`)
-          .then(resp => resp.json())
-          .then(data => {
-            //console.log(data.collection)
-            setTxs(data.collection.metadata.imageUrl)
-            setTxName(data.collection.name)
-          });
-        }
-
-      } catch (err) {
-        console.log(err);
-      }
-
-  }
-
   const searchByName = (event) => {
     event.persist();
     // Get the search term
@@ -270,7 +256,7 @@ export default function App() {
   ]
 
   const stats1 = [
-      { name: txName, stat: txs, stat1: txPrice / 10**18 },
+      { name: txName, stat: txs, stat1: txPrice },
   ]
 
   useEffect(() => {
@@ -284,10 +270,6 @@ export default function App() {
      },5000)
      return()=>clearInterval(interval)
   }, [gases, prices])
-
-  useEffect(() => {
-    fetchTx()
-  }, [])
 
   return (
       <>
