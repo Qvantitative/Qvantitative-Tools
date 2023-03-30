@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 
-const app = initializeApp({
+export const app = initializeApp({
   apiKey: "AIzaSyC4l2w7fa3iTwmHszof6wsmRLoDqDw0KcU",
   authDomain: "qvantitative-77a18.firebaseapp.com",
   projectId: "qvantitative-77a18",
@@ -10,4 +10,3 @@ const app = initializeApp({
   measurementId: "G-SDB5M7VY1T"
 });
 
-export default app;
