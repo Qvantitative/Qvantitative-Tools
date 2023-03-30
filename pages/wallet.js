@@ -1,12 +1,19 @@
 /* This example requires Tailwind CSS v2.0+ */
-import React, {Fragment, useEffect, useRef, useState} from 'react'
-import { Disclosure, Menu, Transition } from '@headlessui/react'
-import {BellIcon, HomeIcon, MenuIcon, XIcon} from '@heroicons/react/outline'
-import {useMoralis, useMoralisWeb3Api} from "react-moralis";
+import React, {useContext, useEffect, useState} from 'react'
+import {useMoralisWeb3Api, useNewMoralisObject} from "react-moralis";
 import Chartjs from "chart.js/auto";
-import { useRouter } from "next/router";
-import { ethers } from "ethers";
+import * as helpers from 'chart.js/helpers';
+import {
+  TreemapController,
+  TreemapElement
+} from '../node_modules/chartjs-chart-treemap/dist/chartjs-chart-treemap.esm.js';
+import {useRouter} from "next/router";
+import {app} from "./services/server";
+import {getAuth} from "firebase/auth";
+import {MultipleContext} from "./Contexts/MultipleContext";
+import AppContainer from "./App";
 
+Chartjs.register(TreemapController, TreemapElement);
 
 const chartColors = [
   "#336699",
@@ -74,23 +81,34 @@ const baseURL = "https://eth-mainnet.alchemyapi.io/nft/v2/rpgRyd5BBElsZ8OaDerQFR
 const baseURL1 = "https://api.reservoir.tools/users/"
 const baseURL2 = "https://api.opensea.io/api/v1/collections";
 const baseURL3 = "https://api.opensea.io/api/v1/collection";
-const baseURL4 = " https://api.covalenthq.com/v1/1/nft_market/collection";
+const baseURL4 = "https://api.covalenthq.com/v1/1/nft_market/collection";
 const fetchURL1 = `${baseURL}?contractAddress=0xbd4455da5929d5639ee098abfaa3241e9ae111af`;
 const fetchURL2 = `${baseURL}?contractAddress=0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D`;
 const fetchURL3 = `${baseURL}?contractAddress=0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB`;
+const fetchURL4 = `${baseURL}?contractAddress=0x23581767a106ae21c074b2276D25e5C3e136a68b`;
 //const fetchURL3 = `${baseURL1}0x3572DB2E377a4efECa5CBd58A241979C7Cdb00aE/collections/v2?collection=0xCa7cA7BcC765F77339bE2d648BA53ce9c8a262bD&includeTopBid=false&offset=0`;
 //const fetchURL4 = `${baseURL4}/0xbd4455da5929d5639ee098abfaa3241e9ae111af/?&key=ckey_b7d4ed5a9a1a40b79ff9a65e8c4`;
 const req = new Request(fetchURL1)
 
-export default function App() {
+function Spinner() {
+  return (
+    <div>
+      <p>Loading...</p>
+    </div>
+  );
+}
+
+export default function Wallet() {
   const [wallets, setWallets] = useState(null);
   const [wallets0, setWallets0] = useState(null);
   const [balances, setBalances] = useState(null);
   const [gases, setGases] = useState(null);
   const [prices, setPrices] = useState(null);
   const [filterData, setFilterData] = useState(null);
+  const [amountOwned, setAmountOwned] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loading2, setLoading2] = useState(false);
   const [loading1, setLoading1] = useState(false);
   const [currentAccount, setCurrentAccount] = useState(null);
   const [currentAccount1, setCurrentAccount1] = useState(null);
@@ -99,74 +117,111 @@ export default function App() {
   const [txName, setTxName] = useState(null);
   const [owners, setOwners] = useState(null);
   const [amount, setAmount] = useState(null);
+  const [object, setObject] = useState(null);
   const Web3Api = useMoralisWeb3Api();
-  const [logged, setLogged] = useState();
+  const {save} = useNewMoralisObject("merged");
   const router = useRouter();
-  const {
-    authenticate,
-    isAuthenticated,
-    logout
-  } = useMoralis();
+  const auth = getAuth(app);
+  const {user, setUser}  = useContext(MultipleContext)
+  const {userA, setUserA}  = useContext(MultipleContext)
+  const [showChart, setShowChart] = useState(false);
+
+  //console.log(user)
 
   useEffect(() => {
-    if (!isAuthenticated) router.replace("/");
-  }, [isAuthenticated]);
+    if (!userA) router.push("/dashboard");
+  }, [!userA]);
 
-  async function fetchWallet() {
+  async function logout() {
+    await auth.signOut();
+    setUserA(null);
+  }
 
-      try {
-        const accounts = await ethereum.request({
-          method: "eth_requestAccounts",
-        });
-              console.log(accounts);
-              console.log("Found an account! Address: ", accounts[0]);
-              setCurrentAccount(accounts[0]);
-              setIsLoading((currentAccount) => !currentAccount);
+  async function fetchWallet(props) {
 
-        fetch(`${baseURL2}?asset_owner=${accounts[0]}&offset=0&limit=300`)
-            .then(resp => resp.json())
-            .then(data => {
-              //console.log(data)
-              setWallets0(data.length);
-              const responses = data.map((data) =>
-                  fetch(`${baseURL3}/${data.slug}`)
-                      .then((res) => res.json()),
-              );
-              Promise.all(responses)
-                  .then(fetchedOrders => {
-                    console.log(fetchedOrders)
-                    //fetchedOrders.sort(function (x, y) {
-                    //return y.collection.stats.floor_price - x.collection.stats.floor_price;
-                    //})
+    try {
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts",
+      });
 
-                    let addy = fetchedOrders.map((item, i) => Object.assign({}, item, fetchedOrders[i].collection.primary_asset_contracts))
-                    let addys = fetchedOrders.map((item, i) => Object.assign({}, item, addy[i][0]))
-                    //let merged = addys.map(({address})=>[address]).flat(1);
-                    let xAddress = addys.filter(x => x.address !== undefined)
-                    //xAddress.pop()
+      console.log(`Found an account! Address: ${accounts[0]}`);
 
-                    //console.log(xAddress);
-                    setFilterData(xAddress);
-                    setWallets(xAddress);
-                  });
+      setCurrentAccount(accounts[0]);
+      setIsLoading(true);
+
+      const response = await fetch(`${baseURL2}?asset_owner=${accounts[0]}&offset=0&limit=300`);
+      const data = await response.json();
+
+      //console.log(data)
+
+      //console.log(data.map(item => item.owned_asset_count));
+      //const amountOwned = data.reduce((i, item) => item[i].owned_asset_count, 0);
+
+      //console.log()
+
+      setAmountOwned(data.map(item => item.owned_asset_count))
+      setWallets0(data.length);
+
+      const responses = data.map((data) =>
+              fetch(`${baseURL3}/${data.slug}`)
+                  .then((res) => res.json()),
+      );
+        Promise.all(responses)
+          .then(fetchedOrders => {
+            fetchedOrders.forEach(order => {
+              const matchingObject = data.find(dataObj => dataObj.slug === order.collection.slug);
+              if (matchingObject) {
+                const ownedAssetCount = matchingObject.owned_asset_count;
+                const floorPrice = order.collection.stats.floor_price;
+                const heldValue = ownedAssetCount * floorPrice;
+                const avgPrice = order.collection.stats.thirty_day_average_price;
+                const realValue = heldValue * avgPrice
+                order.collection.stats = { ...order.collection.stats, owned_asset_count: ownedAssetCount, held_value: heldValue, realValue: realValue };
+                //const stat = order.collection.stats
+                //const value = stat.held_value
+
+                //console.log(order.collection.stats)
+
+                //const values = data.map(item => item.name)
+                //console.log(order.collection.stats);
+              }
             });
 
-        // get ENS domain of an address
-        const options = { address: accounts[0] };
-        const resolve = await Web3Api.resolve.resolveAddress(options);
-        console.log(resolve.name);
-        setCurrentAccount1(resolve.name)
+            let addy = fetchedOrders.map((item, i) => Object.assign({}, item, fetchedOrders[i].collection.primary_asset_contracts))
+            let addys = fetchedOrders.map((item, i) => Object.assign({}, item, addy[i][0]))
+            //let merged = addys.map(({address})=>[address]).flat(1);
+            let xAddress = addys.filter(x => x.address !== undefined)
+            //xAddress.pop()
+
+            //let names = fetchedOrders.collection.name
+            //let values = fetchedOrders.map((item, i) => Object.assign({}, item, fetchedOrders[i].collection.stats.held_value))
+
+            const names = xAddress.map(item => item.name)
+            const heldValues = xAddress.map(item => item.collection.stats.held_value)
+            const avgPrice = xAddress.map(item => item.collection.stats.thirty_day_average_price)
+            const floor = xAddress.map(item => item.collection.stats.floor_price)
+            const volume = xAddress.map(item => {
+              const value = item.collection.stats.thirty_day_volume;
+              return parseFloat(value.toFixed(2));
+            });
+            //const realValue = floor * avgPrice
+
+            // Create object of arrays names and values
+            const result = names.map((name, i) => {
+                return { name: name, floor: floor[i], average: avgPrice[i], volume: volume[i], value: heldValues[i]};
+            });
+
+            console.log(xAddress);
+
+            setObject(result)
+            setFilterData(xAddress);
+            setWallets(xAddress);
+          });
 
       } catch (err) {
         console.log(err);
       }
 
-  }
-
-  async function handleLogout() {
-      await logout();
-      setLogged(false)
-      console.log("logged out");
   }
 
   async function fetchStats() {
@@ -215,7 +270,7 @@ export default function App() {
           fetch(`https://api.reservoir.tools/collections/activity/v5?collection=${transfersNFT.result[0].token_address}`)
           .then(resp => resp.json())
           .then(data => {
-            console.log(data.activities)
+            //console.log(data.activities)
             let price = data.activities.price
             //setTxPrice(price)
             //setTxs(data.activities.metadata.imageUrl)
@@ -289,6 +344,79 @@ export default function App() {
     fetchTx()
   }, [])
 
+  const getWallet = () => {
+    setLoading2(true);
+     console.log(object);
+
+     const ctx = document.getElementById("myChart").getContext("2d");
+
+     function colorFromRaw(ctx) {
+       if (ctx.type !== "data") {
+         return "transparent";
+       }
+
+       const value = ctx.raw.v;
+       let alpha = (1 + Math.log(value)) / 5;
+       let color = "purple";
+
+       return helpers.color(color).alpha(alpha).rgbString();
+     }
+
+     const tmpChart = Chartjs.getChart(ctx);
+     if (tmpChart) {
+       tmpChart.destroy();
+     }
+
+     new Chartjs(ctx, {
+       type: "treemap",
+       data: {
+         datasets: [
+             {
+               tree: object,
+               key: "volume",
+               groups: ["name"],
+               spacing: 0.5,
+               borderWidth: 1.5,
+               borderColor: "black",
+               backgroundColor: (ctx) => colorFromRaw(ctx),
+               labels: {
+                 display: true,
+                 align: "center",
+                 position: "center",
+                 color: "white",
+                 formatter: (ctx) => {
+                   return [`${ctx.raw.g}`, `${ctx.raw.v}`];},
+                },
+             },
+         ],
+       },
+       options: {
+         scales: {
+           x: {
+             ticks: {
+               callback: function (value) {
+                 const val = `${value}`;
+                 return val.length > 4 ? `${val.substring(0, 4)}...` : val;
+                 },
+             },
+           },
+         },
+         responsive: true,
+         plugins: {
+           title: {
+             display: true,
+             text: `30 DAY VOLUME`,
+           },
+           legend: {
+             display: false,
+           },
+         },
+       },
+     });
+     setLoading2(false);
+     setShowChart(true);
+  };
+
   return (
       <>
         {/*
@@ -300,72 +428,32 @@ export default function App() {
         ```
       */}
         <div className="min-h-full">
-          <Disclosure as="nav" className="bg-gray-800">
-            {({open}) => (
-                <>
-                  <div className="max-w-7xl mx-auto px-4">
-                    <div className="flex items-center justify-between h-16">
-                      <div className="flex items-center">
-                      </div>
-                      <div className="hidden md:block">
-                        <div className="ml-4 flex items-center md:ml-6">
-                          <div className="px-2 py-4 space-y-1 sm:px-3 absolute right-0">
-                            <div>
-                              <a onClick={handleLogout}
-                                 href='home'
-                              >
-                                Disconnect
-                              </a>
-                              <div>
-                                {currentAccount1 || currentAccount}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="-mr-2 flex md:hidden">
-                  {/* Mobile menu button */}
-                    <Disclosure.Button className="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 right-0 hover:text-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-                      <span className="sr-only ">Open main menu</span>
-                      {open ? (
-                        <XIcon />
-                      ) : (
-                        <MenuIcon className="block h-6 w-6 absolute inset-y-7 right-0" aria-hidden="true" />
-                      )}
-                    </Disclosure.Button>
-                  </div>
-
-                  <Disclosure.Panel className="border-b border-gray-700 md:hidden absolute inset-y-0 right-0">
-                    <div className="px-2 py-4 space-y-1 sm:px-3 absolute right-0">
-                      <a onClick={handleLogout}
-                         href='home'
-                      >
-                        Disconnect
-                      </a>
-                      <br/>
-                      <Disclosure.Button>
-                        {currentAccount1 || currentAccount}
-                      </Disclosure.Button>
-                    </div>
-                  </Disclosure.Panel>
-                </>
-            )}
-          </Disclosure>
-
           <main>
             <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
               {/* Replace with your content */}
               <div>
                   <div>
+                    <dl className="mt-5 grid gap-5 sm:grid-cols-4">
+                      {loading2 ? (
+                        <Spinner />
+                      ) : showChart ? (
+                        <canvas id="myChart2" />
+                      ) : (
+                        <button
+                            className="px-7 py-4 text-xl rounded-xl bg-purple-300 animate-pulse"
+                            onClick={() => getWallet()}>
+                          Show Map
+                        </button>
+                      )}
+                    </dl>
                     <dl className="mt-5 grid grid-cols-2 gap-5 sm:grid-cols-4">
-                      {stats.map((item) => (
-                        <div key={item.name} className="px-4 py-5 bg-gray-700 shadow rounded-lg overflow-hidden sm:p-6">
-                          <dt className="text-sm font-medium text-white truncate">{item.name}</dt>
-                          <dd className="mt-1 text-3xl font-semibold text-white">{item.stat}</dd>
-                        </div>
-                      ))}
+                      {
+                        (loading)
+                            ?
+                            <Spinner />
+                            :
+                            <canvas id="myChart" />
+                      }
                     </dl>
                   </div>
                 </div>
@@ -406,210 +494,234 @@ export default function App() {
                           <input type="text " className="searchByName rounded-lg py-2 min-w-full" onChange={(e) => searchByName(e)} ></input>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-10 sm:grid-cols-1">
-                          <div className="my-2 sm:-mx-6 lg:-mx-8 overflow-x-auto">
-                            <div className="py-2 align-middle h-96 min-w-full inline-block sm:px-6 lg:px-8 flex-row justify-between">
-                              <div className="shadow sm:rounded-sm">
-                                <div className="grid grid-cols-4 gap-1">
+                        {
 
-                                    {filterData && filterData.map((wallet, index) => {
-                                      const floor = wallet.collection.stats.floor_price;
-                                      //console.log(wallet.address)
-                                      const v = wallet.collection.stats.total_volume;
-                                      const volume = v.toFixed(2)
+                          (!userA)
 
-                                      const y = wallet.collection.image_url
-                                      //const z = wallet.collection.
-                                      //console.log(w)
+                              ?
 
-                                      //const onButtonClick = () => {
-                                        //const data = [[wallet.collection.stats.total_supply-wallet.tokenCount], wallet.tokenCount];
-                                        //updateDataset(0, data);
-                                      //};
+                              <AppContainer/>
 
-                                      const onButtonClick = () => {
-                                        setLoading(true)
+                              :
+                                <div className="grid grid-cols-1 gap-10 sm:grid-cols-1">
+                                  <div className="my-2 sm:-mx-6 lg:-mx-8 overflow-x-auto">
+                                    <div className="py-2 align-middle h-96 min-w-full inline-block sm:px-6 lg:px-8 flex-row justify-between">
+                                      <div className="shadow sm:rounded-sm">
+                                        <div className="grid grid-cols-4 gap-1">
 
-                                        const url1 = `${baseURL}?contractAddress=${wallet.address}`
-                                        const url2 = fetchURL2
-                                        const url3 = fetchURL3
+                                            {filterData && filterData.map((wallet, index) => {
+                                              const w = wallet
+                                              const floor = w.collection.stats.floor_price;
+                                              const owned = w.collection.stats.owned_asset_count;
+                                              const name = w.collection.name;
+                                              const v = w.collection.stats.total_volume;
+                                              const volume = v.toFixed(2)
+                                              const y = w.collection.image_url
 
-                                        const urls = [
-                                            url1,
-                                            url2,
-                                        ];
+                                              //console.log(wallet.collection)
 
-                                        const urls2 = [
-                                            url1,
-                                            url3,
-                                        ];
+                                              const getApes = () => {
+                                                setLoading(true)
 
-                                        Promise.all(
-                                            urls.map(url =>
-                                                fetch(url)
-                                                    .then(res => res.json())
-                                                    .then(res => res.ownerAddresses)
-                                            ))
-                                            .then(data => {
+                                                const url1 = `${baseURL}?contractAddress=${wallet.address}`
 
-                                              //console.log(data)
-                                              let arrIntersection = data[0].filter((a) => {
-                                                return data[1].includes(a)
-                                              }).map(item => ({ownerAddress: item}))
+                                                const urls = [
+                                                    url1,
+                                                    fetchURL2,
+                                                ];
 
-                                              if (arrIntersection.length !== 0) {
-                                                //console.log(arrIntersection)
-                                                const responses = arrIntersection.map((arrIntersection) =>
-                                                    fetch(`${baseURL1}${arrIntersection.ownerAddress}/collections/v2?collection=0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D&includeTopBid=false&offset=0`)
-                                                        .then((res) => res.json()),
-                                                );
-                                                Promise.all(responses)
-                                                    .then(fetchedOrders => {
-                                                      //console.log(fetchedOrders)
-                                                      let merged = arrIntersection.map((item, i) => Object.assign({}, item, fetchedOrders[i].collections[0].ownership));
-                                                      merged.sort(function (x, y) {
-                                                        return y.tokenCount - x.tokenCount;
-                                                      })
-                                                      //console.log(merged)
+                                                Promise.all(
+                                                    urls.map(url =>
+                                                        fetch(url)
+                                                            .then(res => res.json())
+                                                            .then(res => res.ownerAddresses)
+                                                    ))
+                                                    .then(data => {
 
-                                                      setOwners(merged.length)
+                                                      //console.log(data)
+                                                      let arrIntersection = data[0].filter((a) => {
+                                                        return data[1].includes(a)
+                                                      }).map(item => ({ownerAddress: item}))
 
-                                                      let sum = merged.reduce(function (prev, current) {
-                                                        return prev + +current.tokenCount
-                                                      }, 0);
-                                                      //console.log(sum)
+                                                      if (arrIntersection.length !== 0) {
+                                                        //console.log(arrIntersection)
+                                                        const responses = arrIntersection.map((arrIntersection) =>
+                                                            fetch(`${baseURL1}${arrIntersection.ownerAddress}/collections/v2?collection=0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D&includeTopBid=false&offset=0`)
+                                                                .then((res) => res.json()),
+                                                        );
+                                                        Promise.all(responses)
+                                                            .then(fetchedOrders => {
+                                                              //console.log(fetchedOrders)
+                                                              let merged = arrIntersection.map((item, i) => Object.assign({}, item, fetchedOrders[i].collections[0].ownership));
+                                                              merged.sort(function (x, y) {
+                                                                return y.tokenCount - x.tokenCount;
+                                                              })
+                                                              //console.log(merged)
 
-                                                      let mergedOwner = merged.map(({ownerAddress})=>[ownerAddress]).flat(1);
-                                                      let mergedToken = merged.map(({tokenCount})=>[tokenCount]).flat(1);
-                                                      let mergedCount = mergedToken.map(Number)
-                                                      mergedCount.unshift(sum)
+                                                              setOwners(merged.length)
 
-                                                      let merged1 = arrIntersection.map((item, i) => Object.assign({}, item, fetchedOrders[i].collections[0].collection));
-                                                      let distribution = [].concat([merged1[0].tokenCount - sum], sum).map(Number);
-                                                      console.log(mergedOwner);
-                                                      //let distribution1 = distribution[0] / 10000
-                                                      //console.log(distribution1);
+                                                              let sum = merged.reduce(function (prev, current) {
+                                                                return prev + +current.tokenCount
+                                                              }, 0);
+                                                              //console.log(sum)
 
-                                                      setAmount(distribution[1])
+                                                              let mergedOwner = merged.map(({ownerAddress})=>[ownerAddress]).flat(1);
+                                                              let mergedToken = merged.map(({tokenCount})=>[tokenCount]).flat(1);
+                                                              let mergedCount = mergedToken.map(Number)
+                                                              mergedCount.unshift(sum)
 
-                                                      let ctx = document.getElementById("myChart").getContext('2d');
+                                                              //console.log(merged)
 
-                                                      const tmpChart = Chartjs.getChart('myChart');
-                                                      if (tmpChart) {
-                                                        tmpChart.destroy()
-                                                      }
+                                                              let merged1 = arrIntersection.map((item, i) => Object.assign({}, item, fetchedOrders[i].collections[0].collection));
+                                                              //let distribution = [].concat([merged1[0].tokenCount - sum], sum).map(Number);
+                                                              //console.log(mergedCount[0]);
+                                                              //let distribution1 = distribution[0] / 10000
+                                                              //console.log(distribution1);
 
-                                                      new Chartjs(ctx,{
-                                                        type: "bar",
-                                                        data: {
-                                                          labels: mergedOwner,
-                                                          datasets: [
-                                                              {
-                                                                label: `${mergedCount[0]} Ape/(s) Owned`,
-                                                                data: mergedToken,
-                                                                backgroundColor: chartColors,
-                                                                hoverBackgroundColor: chartColors
+                                                              setAmount(mergedCount[0])
+                                                              //console.log(amountOwned);
+
+                                                              let ctx = document.getElementById("myChart").getContext('2d');
+
+                                                              function colorFromRaw(ctx) {
+                                                                if (ctx.type !== 'data') {
+                                                                  return 'transparent';
+                                                                }
+                                                                const value = ctx.raw.v;
+                                                                //console.log(value)
+                                                                let alpha = (1 + Math.log(value)) / 5;
+                                                                const color = value > 5 ? 'gold' : 'green';
+                                                                return helpers.color(color)
+                                                                  .alpha(alpha)
+                                                                  .rgbString();
                                                               }
-                                                              ]
-                                                        },
-                                                        options: {
-                                                          indexAxis: 'y',
-                                                          // Elements options apply to all of the options unless overridden in a dataset
-                                                          // In this case, we are setting the border of each horizontal bar to be 2px wide
-                                                          elements: {
-                                                            bar: {
-                                                              borderWidth: 2,
-                                                            }
-                                                          },
-                                                          responsive: true,
-                                                          plugins: {
-                                                            legend: {
-                                                              position: 'right',
-                                                            },
-                                                            title: {
-                                                              display: true,
-                                                              text: `Apes owned by ${wallet.collection.slug} holders`
-                                                            }
-                                                          }
-                                                        },
-                                                      });
+
+                                                              const tmpChart = Chartjs.getChart('myChart');
+                                                              if (tmpChart) {
+                                                                tmpChart.destroy()
+                                                              }
 
 
-                                                      //new Chartjs(ctx,{
-                                                      //  type: "pie",
-                                                      //  data: {
-                                                        //  labels: [`Apes held from others`, `Apes held from ${wallet.collection.slug}`],
-                                                        //  datasets: [
-                                                        //      {
-                                                        //        data: distribution,
-                                                        //        backgroundColor: chartColors,
-                                                        //        hoverBackgroundColor: chartColors
-                                                        //      }
-                                                        //      ]
-                                                        //},
-                                                      //});
+                                                              new Chartjs(ctx,{
+                                                                type: "treemap",
+                                                                data: {
+                                                                  datasets: [
+                                                                    {
+                                                                      tree: merged,
+                                                                      key: 'tokenCount',
+                                                                      groups: ['ownerAddress'],
+                                                                      spacing: 0.5,
+                                                                      borderWidth: 1.5,
+                                                                      borderColor: 'black',
+                                                                      backgroundColor: (ctx) => colorFromRaw(ctx),
+                                                                      labels: {
+                                                                        display: true,
+                                                                        align: 'center',
+                                                                        position: 'top',
+                                                                        color: "white",
+                                                                        formatter: (ctx) => {
+                                                                          //const result = ctx.raw.g
+                                                                          //const result1 = result.match(/.{1,4}/g) ?? [];
+                                                                          //console.log(result1)
+                                                                          return `${ctx.raw.g}: ${ctx.raw.v}`
+                                                                        }
+                                                                      },
+                                                                    }
+                                                                  ]
+                                                                },
+                                                                options: {
+                                                                  scales: {
+                                                                    x: {
+                                                                      ticks: {
+                                                                        callback: function (value) {
+                                                                          const val = `${value}`
+                                                                          return val.length > 4 ? `${val.substring(0, 4)}...` : val;
+                                                                        }
+                                                                      }
+                                                                    }
+                                                                  },
+                                                                  responsive: true,
+                                                                  plugins: {
+                                                                    title: {
+                                                                      display: true,
+                                                                      text: `${amount} Apes owned by ${wallet.collection.slug} holders`
+                                                                    },
+                                                                    legend: {
+                                                                      display: false
+                                                                    },
+                                                                  }
+                                                                },
+                                                              });
 
-                                                    });
-                                                setLoading(false)
-                                              }
-                                            })
-                                        //console.log(floor)
-                                      };
 
-                                    return(
-                                      <div className="wallet " key={index}>
-                                        <div className={filterData % 2 === 0 ? 'bg-white' : 'bg-gray-50 transition ease-in-out delay-150 duration-300 px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-8' }>
-                                          <div className="whitespace-nowrap text-sm font-medium text-gray-500">
-                                            <button onClick={onButtonClick} disabled={loading}>
-                                              <img
-                                                  className="inline-block h-40 w-40"
-                                                  src={y}
-                                              />
-                                            </button>
-                                            <div><strong>NAME</strong></div>
-                                            {wallet.collection.name}
-                                          </div>
-                                          <div className="whitespace-nowrap text-sm font-medium text-gray-500">
-                                            <div><strong>PRICE FLOOR</strong></div>
-                                            {floor} eth
-                                          </div>
-                                          <div className="whitespace-nowrap text-sm font-medium text-gray-500 place-items-end">
-                                            <div><strong>TOTAL VOLUME</strong></div>
-                                            {volume} eth
-                                          </div>
-                                          <div className="whitespace-nowrap text-sm font-medium text-gray-500 place-items-end">
-                                            <div><strong>24h PRICE CHANGE</strong></div>
-                                            {wallet.collection.stats.one_day_change.toFixed(2)}
-                                          </div>
+
+                                                              //const key = 'stats.floor_price' + '*' + 'stats.owned_asset_count';
+
+
+                                                              //new Chartjs(ctx,{
+                                                              //  type: "pie",
+                                                              //  data: {
+                                                                //  labels: [`Apes held from others`, `Apes held from ${wallet.collection.slug}`],
+                                                                //  datasets: [
+                                                                //      {
+                                                                //        data: distribution,
+                                                                //        backgroundColor: chartColors,
+                                                                //        hoverBackgroundColor: chartColors
+                                                                //      }
+                                                                //      ]
+                                                                //},
+                                                              //});
+
+                                                            });
+                                                        setLoading(false)
+                                                      }
+                                                    })
+                                                //console.log(floor)
+                                              };
+
+                                            return(
+                                              <div className="wallet " key={index}>
+                                                <div className={filterData % 2 === 0 ? 'bg-white' : 'bg-gray-50 transition ease-in-out delay-150 duration-300 px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-8' }>
+                                                  <div className="whitespace-nowrap text-sm font-medium text-gray-500">
+                                                    <button onClick={getApes} disabled={loading}>
+                                                      <img
+                                                          className="inline-block h-40 w-40"
+                                                          src={y}
+                                                      />
+                                                    </button>
+                                                    <div><strong>NAME</strong></div>
+                                                    {name}
+                                                  </div>
+                                                  <div className="whitespace-nowrap text-sm font-medium text-gray-500">
+                                                    <div><strong>Owned</strong></div>
+                                                    {owned}
+                                                  </div>
+                                                  <div className="whitespace-nowrap text-sm font-medium text-gray-500">
+                                                    <div><strong>PRICE FLOOR</strong></div>
+                                                    {floor} eth
+                                                  </div>
+                                                  <div className="whitespace-nowrap text-sm font-medium text-gray-500 place-items-end">
+                                                    <div><strong>TOTAL VOLUME</strong></div>
+                                                    {volume} eth
+                                                  </div>
+                                                  <div className="whitespace-nowrap text-sm font-medium text-gray-500 place-items-end">
+                                                    <div><strong>24h PRICE CHANGE</strong></div>
+                                                    {wallet.collection.stats.one_day_change.toFixed(2)}
+                                                  </div>
+                                                </div>
+                                              </div>
+
+                                            )}
+                                            )}
                                         </div>
                                       </div>
+                                    </div>
+                                  </div>
+                                  <div>
 
-                                    )}
-                                    )}
+                                  </div>
                                 </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div>
-                            {
-                              (loading)
-                              ?
-                              <svg
-                                  role="status"
-                                  className="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
-                                  viewBox="0 0 100 101" fill="none">
-                                <path
-                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                    fill="currentColor"/>
-                                <path
-                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                    fill="currentFill"/>
-                              </svg>
-                              :
-                              <canvas id="myChart" />
-                            }
-                          </div>
-                        </div>
+                        }
                       </div>
                   </div>
               </div>

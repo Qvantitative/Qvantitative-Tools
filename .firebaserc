@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "qvantitative-77a18"
+  },
+  "targets": {},
+  "etags": {
+    "qvantitative-77a18": {
+      "extensionInstances": {
+        "moralis-auth-u4da": "59ab86d570381fa67f0471c5eb77ec3503a8f35004f7910f85605651338823c1",
+        "moralis-auth": "df995f8ae123a849af904e69943366767495c3d86cd4c15333ccdd34a8531413"
+      }
+    }
+  }
+}

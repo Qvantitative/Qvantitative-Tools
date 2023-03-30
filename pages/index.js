@@ -1,6 +1,8 @@
 import React from 'react';
 import Home from './home';
-import {useTheme} from 'next-themes'
+import {useTheme} from 'next-themes';
+import Sidebar from "./components/sidebar";
+import AppContainer from "./App";
 
 function Index() {
   const {theme, setTheme} = useTheme()
@@ -12,7 +14,8 @@ function Index() {
         className="p-3 h-12 w-12 order-2 md:order-3"
         onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
       />,
-    <Home />
+      <Home />
+
   );
 };
 

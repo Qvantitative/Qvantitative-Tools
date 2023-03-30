@@ -1,34 +1,54 @@
-import {useEffect, useState} from "react";
-import {useMoralis} from "react-moralis";
-import {useRouter} from "next/router";
+import { useEffect, useContext } from "react";
+import { useRouter } from "next/router";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getMoralisAuth } from "@moralisweb3/client-firebase-auth-utils";
+import { app } from "./services/server";
+import { signInWithMoralis } from "@moralisweb3/client-firebase-evm-auth";
+import { MultipleContext } from "./Contexts/MultipleContext";
+import {useBreakpointValue} from "@chakra-ui/react";
 
-export default function Example() {
-
-    const { isAuthenticated, authenticate } = useMoralis();
+export default function Home() {
     const router = useRouter();
+    const { user, setUser }  = useContext(MultipleContext)
+    const auth = getAuth(app);
+    const db = getFirestore(app)
+
+    async function getApes(){
+        try {
+
+            const moralisAuth = getMoralisAuth(app, {
+                auth,
+                db
+            });
+
+            const res = await signInWithMoralis(moralisAuth);
+            setUser(res.credentials.user.uid)
+            console.log(res.credentials.user.displayName)
+
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
     useEffect(() => {
-      if (isAuthenticated) router.replace("/wallet");
-    }, [isAuthenticated]);
+      if (user) router.push("/dashboard");
+    }, [user]);
 
     return (
       <div className="relative isolate overflow-hidden bg-gray-900">
           <div className="py-24 px-6 sm:px-6 sm:py-32 lg:px-8">
               <div className="mx-auto min-h-screen max-w-2xl text-center">
                   <h2 className="text-4xl font-bold tracking-tight text-white">
-                      Q-Tools
+                      Home
                   </h2>
                   <br/>
                   <br/>
                   <button
                       className="px-7 py-4 text-xl rounded-xl bg-purple-300 animate-pulse"
-                      onClick={() =>
-                          authenticate({
-                              signingMessage: "Authorize linking of your wallet"
-                          })
-                  }
+                      onClick={getApes}
                   >
-                      Login using Metamask
+                      Enter
                   </button>
               </div>
           </div>

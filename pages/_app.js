@@ -3,18 +3,32 @@ import '../styles/globals.css';
 import React from 'react';
 import { ThemeProvider } from 'next-themes';
 import { MoralisProvider } from "react-moralis";
+import { ClientProvider } from '@micro-stacks/react';
+import Context from "./Contexts/MultipleContext";
+import Sidebar from "./components/sidebar";
 
 function MyApp({ Component, pageProps }) {
+
   return (
-      <MoralisProvider
-          serverUrl="https://qprwtbpvop62.grandmoralis.com:2053/server"
-          appId="Avbz29guzhOUWzHlFz5wtGp49VzDEWbHkoCCHMBT">
-          <ThemeProvider attribute="class">
-              <Component
-                {...pageProps}
-              />
-          </ThemeProvider>
-       </MoralisProvider>
+      <ClientProvider
+          appName="Nextjs + Microstacks"
+          appIconUrl="/vercel.png"
+      >
+          <MoralisProvider
+              serverUrl="https://qprwtbpvop62.grandmoralis.com:2053/server"
+              appId="Avbz29guzhOUWzHlFz5wtGp49VzDEWbHkoCCHMBT">
+              <ThemeProvider attribute="class">
+                  <Context>
+                      <Sidebar>
+                          <Component>
+                            {pageProps}
+                          </Component>
+                      </Sidebar>
+                  </Context>
+              </ThemeProvider>
+          </MoralisProvider>
+      </ClientProvider>
+
   )
 };
 
