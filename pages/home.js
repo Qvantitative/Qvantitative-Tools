@@ -6,7 +6,6 @@ import { getMoralisAuth } from "@moralisweb3/client-firebase-auth-utils";
 import { app } from "./services/server";
 import { signInWithMoralis } from "@moralisweb3/client-firebase-evm-auth";
 import { MultipleContext } from "./Contexts/MultipleContext";
-import {useBreakpointValue} from "@chakra-ui/react";
 
 export default function Home() {
     const router = useRouter();

@@ -10,8 +10,6 @@ import {
   UsersIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-import Home from "../home";
-import Dashboard from "../dashboard";
 import {useRouter} from "next/router";
 import {MultipleContext} from "../Contexts/MultipleContext";
 import Link from "next/link";

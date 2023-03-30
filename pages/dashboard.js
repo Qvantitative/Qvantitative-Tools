@@ -1,6 +1,3 @@
-import {navigation} from "./components/sidebar";
-import {classNames} from "./components/sidebar";
-import Link from "next/link";
 import {useContext, useEffect} from "react";
 import {MultipleContext} from "./Contexts/MultipleContext";
 import {useRouter} from "next/router";
@@ -9,10 +6,8 @@ import {app} from "./services/server";
 import {getFirestore} from "firebase/firestore";
 import {getMoralisAuth} from "@moralisweb3/client-firebase-auth-utils";
 import {signInWithMoralis} from "@moralisweb3/client-firebase-evm-auth";
-import Home from "./home";
 import React from "react";
 import Wallet from "./wallet";
-import WalletMB from "./walletMB";
 
 export default function Dashboard() {
     const { user }  = useContext(MultipleContext)
