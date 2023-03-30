@@ -12,7 +12,6 @@ import Wallet from "./wallet";
 export default function Dashboard() {
     const { user }  = useContext(MultipleContext)
     const { userA, setUserA } = useContext(MultipleContext)
-    const { userB, setUserB } = useContext(MultipleContext)
     const router = useRouter()
     const auth = getAuth(app);
     const db = getFirestore(app)
@@ -34,14 +33,6 @@ export default function Dashboard() {
         }
     }
 
-    async function getPepes(){
-        try {
-
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
     useEffect(() => {
         if (!user) router.push("/home");
     }, [!user]);
@@ -49,10 +40,6 @@ export default function Dashboard() {
     useEffect(() => {
       if (userA) router.push("/wallet");
     }, [userA]);
-
-    useEffect(() => {
-      if (userB) router.push("/walletBTC");
-    }, [userB]);
 
     return (
       <div className="relative isolate overflow-hidden bg-gray-900">
