@@ -1,7 +1,6 @@
 import { initializeApp } from 'firebase/app';
 
-export default function app() {
-  return <>{initializeApp({
+export const app = initializeApp({
   apiKey: "AIzaSyC4l2w7fa3iTwmHszof6wsmRLoDqDw0KcU",
   authDomain: "qvantitative-77a18.firebaseapp.com",
   projectId: "qvantitative-77a18",
@@ -9,6 +8,5 @@ export default function app() {
   messagingSenderId: "622637274894",
   appId: "1:622637274894:web:f74edddd827aa0b1f2295f",
   measurementId: "G-SDB5M7VY1T"
-})}</>;
-}
+});
 
