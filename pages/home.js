@@ -7,6 +7,7 @@ import { app } from "../services/server";
 import { signInWithMoralis } from "@moralisweb3/client-firebase-evm-auth";
 import { MultipleContext } from "./Contexts/MultipleContext";
 
+
 export default function Home() {
     const router = useRouter();
     const { user, setUser }  = useContext(MultipleContext)

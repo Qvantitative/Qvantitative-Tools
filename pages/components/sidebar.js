@@ -19,6 +19,7 @@ import {getAuth} from "firebase/auth";
 import {useMoralisWeb3Api} from "react-moralis";
 import AppContainer from "../App";
 
+
 const Web3 = require("web3");
 const web3 = new Web3("https://mainnet.infura.io/v3/830febf016234fa7b49566eaf9a0e5d0");
 
