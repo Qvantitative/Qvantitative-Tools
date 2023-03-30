@@ -77,7 +77,7 @@ export default function Dashboard() {
                               </div>
                           </div>
                         :
-                        <Wallet/> || <WalletMB/>
+                        <Wallet/>
                   }
               </div>
               {/*
