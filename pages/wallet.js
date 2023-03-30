@@ -8,7 +8,7 @@ import {
   TreemapElement
 } from '../node_modules/chartjs-chart-treemap/dist/chartjs-chart-treemap.esm.js';
 import {useRouter} from "next/router";
-import {app} from "./services/server";
+import {app} from "../services/server";
 import {getAuth} from "firebase/auth";
 import {MultipleContext} from "./Contexts/MultipleContext";
 import AppContainer from "./App";

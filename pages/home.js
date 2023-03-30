@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getMoralisAuth } from "@moralisweb3/client-firebase-auth-utils";
-import { app } from "./services/server";
+import { app } from "../services/server";
 import { signInWithMoralis } from "@moralisweb3/client-firebase-evm-auth";
 import { MultipleContext } from "./Contexts/MultipleContext";
 

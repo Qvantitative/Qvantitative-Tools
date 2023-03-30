@@ -2,7 +2,7 @@ import {useContext, useEffect} from "react";
 import {MultipleContext} from "./Contexts/MultipleContext";
 import {useRouter} from "next/router";
 import {getAuth} from "firebase/auth";
-import {app} from "./services/server";
+import {app} from "../services/server";
 import {getFirestore} from "firebase/firestore";
 import {getMoralisAuth} from "@moralisweb3/client-firebase-auth-utils";
 import {signInWithMoralis} from "@moralisweb3/client-firebase-evm-auth";

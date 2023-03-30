@@ -14,7 +14,7 @@ import {useRouter} from "next/router";
 import {MultipleContext} from "../Contexts/MultipleContext";
 import Link from "next/link";
 import React from "react";
-import {app} from "../services/server";
+import {app} from "../../services/server";
 import {getAuth} from "firebase/auth";
 import {useMoralisWeb3Api} from "react-moralis";
 import AppContainer from "../App";
