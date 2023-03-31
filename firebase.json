@@ -9,6 +9,7 @@
   },
   "extensions": {
     "moralis-auth": "moralis/moralis-auth@0.1.4",
-    "moralis-auth-u4da": "moralis/moralis-auth@0.1.4"
+    "moralis-auth-u4da": "moralis/moralis-auth@0.1.4",
+    "moralis-auth-mn8e": "moralis/moralis-auth@0.1.5"
   }
 }
